@@ -16,6 +16,63 @@
     height: 100vh;
 }
 
+/* 1. Контейнер всей системы должен занимать весь экран */
+#solar-system {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+/* 2. Центровка солнца (оно — точка отсчета) */
+#sun-moon-center {
+    position: absolute;
+    z-index: 1000;
+    /* Центрируем само солнце */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 3. Орбиты и ротаторы */
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid var(--border-gold);
+    border-radius: 50%;
+    pointer-events: none;
+    /* Убедись, что размеры задаются здесь или через JS (например, width: 300px; height: 300px;) */
+}
+
+.rotator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Очень важно: ротатор должен иметь тот же размер, что и орбита! */
+    transform: translate(-50%, -50%); 
+    animation: rotate linear infinite;
+    pointer-events: none;
+}
+
+/* 4. Сама планета на кончике ротатора */
+.orbiting-planet {
+    position: absolute;
+    /* Ставим планету на верхнюю точку окружности */
+    top: 0; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 100;
+    font-size: 2.5rem;
+}
+
+
 /* --- ЦЕНТРАЛЬНЫЙ ОБЪЕКТ (СОЛНЦЕ) --- */
 #sun-moon-center {
     position: relative; /* Чтобы быть точкой отсчета для орбит */
