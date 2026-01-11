@@ -1,22 +1,28 @@
 :root {
     --gold: #ffd700;
-    --white-soft: #e0e0e0;
+    --gold-dim: rgba(255, 215, 0, 0.3);
     --bg-dark: #050505;
-    --dark-glass: rgba(0, 0, 0, 0.85);
-    --border-gold: rgba(255, 215, 0, 0.3);
-    --star-blue: #add8e6;
+    --card-bg: rgba(20, 20, 25, 0.9);
+    
+    /* Цвета для заданий (без белого) */
+    --task-blue: #1e3a8a;
+    --task-green: #064e3b;
+    --task-purple: #4c1d95;
 }
 
-/* --- ГЛОБАЛЬНАЯ ЦЕНТРОВКА ДЛЯ ЭКРАНОВ --- */
-#universe-screen, #planet-screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
+/* --- БАЗОВЫЕ НАСТРОЙКИ И АДАПТИВНОСТЬ --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    color: var(--gold);
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden; /* Запрет прокрутки главного экрана */
 }
 
-/* 1. Контейнер всей системы должен занимать весь экран */
+/* Центровка всей системы */
 #solar-system {
     position: relative;
     width: 100vw;
@@ -24,308 +30,37 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 5;
-}
-
-/* 2. Центровка солнца (оно — точка отсчета) */
-#sun-moon-center {
-    position: absolute;
-    z-index: 1000;
-    /* Центрируем само солнце */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* 3. Орбиты и ротаторы */
-.orbit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid var(--border-gold);
-    border-radius: 50%;
-    pointer-events: none;
-    /* Убедись, что размеры задаются здесь или через JS (например, width: 300px; height: 300px;) */
-}
-
-.rotator {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    /* Очень важно: ротатор должен иметь тот же размер, что и орбита! */
-    transform: translate(-50%, -50%); 
-    animation: rotate linear infinite;
-    pointer-events: none;
-}
-
-/* 4. Сама планета на кончике ротатора */
-.orbiting-planet {
-    position: absolute;
-    /* Ставим планету на верхнюю точку окружности */
-    top: 0; 
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 100;
-    font-size: 2.5rem;
-}
-
-
-/* --- ЦЕНТРАЛЬНЫЙ ОБЪЕКТ (СОЛНЦЕ) --- */
-#sun-moon-center {
-    position: relative; /* Чтобы быть точкой отсчета для орбит */
-    font-size: 70px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 1s ease-in-out;
-    filter: drop-shadow(0 0 20px var(--gold));
-    user-select: none;
-    
-    /* Гарантируем, что сам эмодзи внутри блока по центру */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* --- ОРБИТЫ (Центрирование относительно Солнца) --- */
-.orbit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Сдвиг на половину своего размера назад */
-    border: 1px solid var(--border-gold);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-/* --- КОНТЕЙНЕР ДЛЯ ВРАЩЕНИЯ ПЛАНЕТ --- */
-.rotator {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    /* Размер ротатора должен совпадать с размером орбиты, 
-       который вы задаете в JS или через style="" */
-    transform: translate(-50%, -50%);
-    animation: rotate linear infinite;
-    pointer-events: none;
-}
-
-/* --- ПЛАНЕТЫ (На краю орбиты) --- */
-.orbiting-planet {
-    position: absolute;
-    top: 0; 
-    left: 50%;
-    transform: translate(-50%, -50%); /* Центрируем сам значок планеты на линии */
-    font-size: 2.5rem;
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 100;
-}
-
-/* --- ИНТЕРФЕЙС ПЛАНЕТЫ (Контент по центру) --- */
-.content-wrapper {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Центрируем кнопки и текст внутри */
-    text-align: center;
-}
-
-/* --- АФФИРМАЦИИ И СЧЕТЧИКИ --- */
-#affirmation-text {
-    position: fixed;
-    bottom: 15%;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    pointer-events: none;
-}
-
-#wisdom-counter {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%); /* Горизонтальная центровка плашки счета */
-    background: rgba(0,0,0,0.8);
-    border: 1px solid var(--gold);
-    padding: 8px 20px;
-    border-radius: 25px;
-}
-
-/* --- БАЗОВЫЕ СТИЛИ --- */
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-dark);
-    color: var(--gold); /* Основной текст теперь золотой */
-    font-family: 'Segoe UI', sans-serif;
-    overflow: hidden;
-}
-
-.hidden { display: none !important; }
-
-
-/* --- ГЛОБАЛЬНАЯ ЦЕНТРОВКА ДЛЯ ЭКРАНОВ --- */
-#universe-screen, #planet-screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-}
-
-/* --- ЦЕНТРАЛЬНЫЙ ОБЪЕКТ (СОЛНЦЕ) --- */
-#sun-moon-center {
-    position: relative; /* Чтобы быть точкой отсчета для орбит */
-    font-size: 70px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 1s ease-in-out;
-    filter: drop-shadow(0 0 20px var(--gold));
-    user-select: none;
-    
-    /* Гарантируем, что сам эмодзи внутри блока по центру */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* --- ОРБИТЫ (Центрирование относительно Солнца) --- */
-.orbit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Сдвиг на половину своего размера назад */
-    border: 1px solid var(--border-gold);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-/* --- КОНТЕЙНЕР ДЛЯ ВРАЩЕНИЯ ПЛАНЕТ --- */
-.rotator {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    /* Размер ротатора должен совпадать с размером орбиты, 
-       который вы задаете в JS или через style="" */
-    transform: translate(-50%, -50%);
-    animation: rotate linear infinite;
-    pointer-events: none;
-}
-
-/* --- ПЛАНЕТЫ (На краю орбиты) --- */
-.orbiting-planet {
-    position: absolute;
-    top: 0; 
-    left: 50%;
-    transform: translate(-50%, -50%); /* Центрируем сам значок планеты на линии */
-    font-size: 2.5rem;
-    cursor: pointer;
-    pointer-events: auto;
-    z-index: 100;
-}
-
-/* --- ИНТЕРФЕЙС ПЛАНЕТЫ (Контент по центру) --- */
-.content-wrapper {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Центрируем кнопки и текст внутри */
-    text-align: center;
-}
-
-/* --- АФФИРМАЦИИ И СЧЕТЧИКИ --- */
-#affirmation-text {
-    position: fixed;
-    bottom: 15%;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    pointer-events: none;
-}
-
-#wisdom-counter {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%); /* Горизонтальная центровка плашки счета */
-    background: rgba(0,0,0,0.8);
-    border: 1px solid var(--gold);
-    padding: 8px 20px;
-    border-radius: 25px;
-}
-
-
-/* --- ФОН И ЗВЕЗДЫ --- */
-#stars-container {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 1;
-    background: radial-gradient(circle at center, #050810 0%, #000 100%);
-    pointer-events: none;
-}
-
-.star {
-    position: absolute;
-    background: #fff;
-    border-radius: 50%;
-    animation: twinkle var(--d) infinite ease-in-out;
-}
-
-@keyframes twinkle {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.9; transform: scale(1.3); }
+    perspective: 1000px;
 }
 
 /* --- ЦЕНТРАЛЬНЫЙ ОБЪЕКТ --- */
 #sun-moon-center {
-    font-size: 70px;
-    cursor: pointer;
+    position: absolute;
+    font-size: clamp(40px, 10vw, 80px); /* Адаптивный размер */
     z-index: 1000;
-    transition: all 1s ease-in-out;
     filter: drop-shadow(0 0 20px var(--gold));
+    cursor: pointer;
     user-select: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.meditation-active #sun-moon-center {
-    transform: scale(1.4);
-    filter: drop-shadow(0 0 60px var(--gold)) !important;
-}
+#sun-moon-center:active { transform: scale(0.9); }
 
-/* --- РЕСУРСЫ (НОВОЕ) --- */
-.resource-pop {
-    position: fixed;
-    pointer-events: none;
-    z-index: 1500;
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--gold);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-    animation: resourceFloat 1.5s ease-out forwards;
-}
-
-@keyframes resourceFloat {
-    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
-}
-
-/* --- ПЛАНЕТЫ И ОРБИТЫ --- */
+/* --- ОРБИТЫ И ПЛАНЕТЫ (ЦЕНТРОВКА) --- */
 .orbit {
     position: absolute;
-    border: 1px solid var(--border-gold); /* Орбиты теперь золотистые полупрозрачные */
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid var(--gold-dim);
     border-radius: 50%;
+    pointer-events: none;
+}
+
+.rotator {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: rotate linear infinite;
     pointer-events: none;
 }
 
@@ -333,69 +68,98 @@ body, html {
     position: absolute;
     top: 0; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Адаптивные планеты */
     cursor: pointer;
     pointer-events: auto;
-    z-index: 100;
-    animation: planetPulse 4s infinite ease-in-out;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+    transition: filter 0.3s;
 }
 
-@keyframes planetPulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 5px transparent); }
-    50% { transform: translate(-50%, -50%) scale(1.1); filter: drop-shadow(0 0 15px var(--gold)); }
+.orbiting-planet:hover {
+    filter: drop-shadow(0 0 15px var(--gold));
+}
+
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* --- ЭКРАН ПЛАНЕТЫ (СВОЙ ФОН) --- */
+#planet-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background-size: cover;
+    background-position: center;
+    overflow-y: auto; /* Разрешаем скролл заданий */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Пример того, как менять фон через классы (добавляй их в JS) */
+.bg-mars { background-image: radial-gradient(circle, #450a0a 0%, #050505 100%); }
+.bg-venice { background-image: radial-gradient(circle, #1e3a8a 0%, #050505 100%); }
+
+/* --- КАРТОЧКИ ЗАДАНИЙ (ЦВЕТОВАЯ ПАЛИТРА) --- */
+.content-wrapper {
+    width: 100%;
+    max-width: 450px;
+}
+
+.char-card {
+    background: var(--card-bg);
+    border-left: 4px solid var(--task-blue); /* Цвет полоски */
+    border-radius: 12px;
+    margin-bottom: 15px;
+    padding: 20px;
+    transition: 0.3s;
+}
+
+.char-card:nth-child(2n) { border-left-color: var(--task-purple); }
+.char-card:nth-child(3n) { border-left-color: var(--task-green); }
+
+.char-card.active {
+    box-shadow: 0 0 20px var(--gold-dim);
+    border-color: var(--gold);
 }
 
 /* --- КНОПКИ (БЕЗ БЕЛОГО) --- */
-.fx-unlock-btn, .complete-btn-gold, .start-task-btn, .close-btn {
-    border: 1px solid var(--gold) !important;
-    color: var(--gold) !important;
-    background: rgba(255, 215, 0, 0.05) !important;
-    padding: 10px 25px;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.fx-unlock-btn:hover, .complete-btn-gold:hover, .start-task-btn:hover {
-    background: var(--gold) !important;
-    color: black !important;
-    box-shadow: 0 0 20px var(--gold);
-}
-
-/* --- ИНТЕРФЕЙС ПЛАНЕТЫ --- */
-#planet-screen {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 2000;
-    backdrop-filter: blur(15px);
-    background: rgba(0, 0, 0, 0.8);
-    color: var(--gold);
-}
-
-/* Убираем белые рамки у карточек */
-.char-card {
-    background: rgba(255, 215, 0, 0.05);
-    border: 1px solid var(--border-gold);
-    border-radius: 15px;
-    color: var(--gold);
-}
-
-.char-card.active {
-    border-color: var(--gold);
-    box-shadow: inset 0 0 15px rgba(255, 215, 0, 0.2);
-}
-
-/* Дневник */
-textarea {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5);
+.btn-action {
+    background: transparent;
     border: 1px solid var(--gold);
     color: var(--gold);
-    border-radius: 10px;
-    padding: 10px;
-    outline: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.btn-action:hover {
+    background: var(--gold);
+    color: #000;
+}
+
+/* --- АДАПТИВНОСТЬ ПОД МОБИЛКИ --- */
+@media (max-width: 600px) {
+    #sun-moon-center { font-size: 50px; }
+    .orbiting-planet { font-size: 1.8rem; }
+    .content-wrapper { padding: 10px; }
+    #wisdom-counter { font-size: 0.9rem; width: 80%; text-align: center; }
+}
+
+/* --- ЭФФЕКТЫ --- */
+.resource-pop {
+    position: fixed;
+    pointer-events: none;
+    animation: resourceFloat 1.2s forwards;
+    font-size: 1.5rem;
+}
+
+@keyframes resourceFloat {
+    0% { transform: scale(1) translateY(0); opacity: 1; }
+    100% { transform: scale(1.5) translateY(-100px); opacity: 0; }
 }
