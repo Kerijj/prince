@@ -21,6 +21,100 @@ body, html {
 
 .hidden { display: none !important; }
 
+
+/* --- ГЛОБАЛЬНАЯ ЦЕНТРОВКА ДЛЯ ЭКРАНОВ --- */
+#universe-screen, #planet-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- ЦЕНТРАЛЬНЫЙ ОБЪЕКТ (СОЛНЦЕ) --- */
+#sun-moon-center {
+    position: relative; /* Чтобы быть точкой отсчета для орбит */
+    font-size: 70px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 1s ease-in-out;
+    filter: drop-shadow(0 0 20px var(--gold));
+    user-select: none;
+    
+    /* Гарантируем, что сам эмодзи внутри блока по центру */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- ОРБИТЫ (Центрирование относительно Солнца) --- */
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Сдвиг на половину своего размера назад */
+    border: 1px solid var(--border-gold);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* --- КОНТЕЙНЕР ДЛЯ ВРАЩЕНИЯ ПЛАНЕТ --- */
+.rotator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Размер ротатора должен совпадать с размером орбиты, 
+       который вы задаете в JS или через style="" */
+    transform: translate(-50%, -50%);
+    animation: rotate linear infinite;
+    pointer-events: none;
+}
+
+/* --- ПЛАНЕТЫ (На краю орбиты) --- */
+.orbiting-planet {
+    position: absolute;
+    top: 0; 
+    left: 50%;
+    transform: translate(-50%, -50%); /* Центрируем сам значок планеты на линии */
+    font-size: 2.5rem;
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 100;
+}
+
+/* --- ИНТЕРФЕЙС ПЛАНЕТЫ (Контент по центру) --- */
+.content-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрируем кнопки и текст внутри */
+    text-align: center;
+}
+
+/* --- АФФИРМАЦИИ И СЧЕТЧИКИ --- */
+#affirmation-text {
+    position: fixed;
+    bottom: 15%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+}
+
+#wisdom-counter {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Горизонтальная центровка плашки счета */
+    background: rgba(0,0,0,0.8);
+    border: 1px solid var(--gold);
+    padding: 8px 20px;
+    border-radius: 25px;
+}
+
+
 /* --- ФОН И ЗВЕЗДЫ --- */
 #stars-container {
     position: fixed;
