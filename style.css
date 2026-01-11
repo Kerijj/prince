@@ -2,164 +2,106 @@
     --gold: #ffd700;
     --gold-dim: rgba(255, 215, 0, 0.3);
     --bg-dark: #050505;
-    --card-bg: rgba(20, 20, 25, 0.9);
-    
-    /* Цвета для заданий (без белого) */
-    --task-blue: #1e3a8a;
-    --task-green: #064e3b;
-    --task-purple: #4c1d95;
+    /* Палитра для карточек */
+    --card-bg: rgba(15, 15, 20, 0.95);
+    --task-accent-1: #4c1d95; /* Фиолетовый */
+    --task-accent-2: #1e3a8a; /* Синий */
+    --task-accent-3: #064e3b; /* Изумрудный */
 }
 
-/* --- БАЗОВЫЕ НАСТРОЙКИ И АДАПТИВНОСТЬ --- */
 body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
     background: var(--bg-dark);
     color: var(--gold);
     font-family: 'Segoe UI', sans-serif;
-    overflow: hidden; /* Запрет прокрутки главного экрана */
+    overflow: hidden;
 }
 
-/* Центровка всей системы */
+#universe-screen {
+    width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+}
+
 #solar-system {
     position: relative;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    perspective: 1000px;
+    width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
 }
 
-/* --- ЦЕНТРАЛЬНЫЙ ОБЪЕКТ --- */
-#sun-moon-center {
-    position: absolute;
-    font-size: clamp(40px, 10vw, 80px); /* Адаптивный размер */
-    z-index: 1000;
-    filter: drop-shadow(0 0 20px var(--gold));
-    cursor: pointer;
-    user-select: none;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-#sun-moon-center:active { transform: scale(0.9); }
-
-/* --- ОРБИТЫ И ПЛАНЕТЫ (ЦЕНТРОВКА) --- */
-.orbit {
+/* Орбиты и ротаторы - ПРОПУСКАЮТ КЛИКИ */
+.orbit, .rotator {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    border: 1px solid var(--gold-dim);
+    pointer-events: none; /* Ключевое исправление */
     border-radius: 50%;
-    pointer-events: none;
 }
 
-.rotator {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    animation: rotate linear infinite;
-    pointer-events: none;
-}
+.orbit { border: 1px solid var(--gold-dim); }
 
+.rotator { animation: rotate linear infinite; }
+
+/* Планеты - ПРИНИМАЮТ КЛИКИ */
 .orbiting-planet {
     position: absolute;
     top: 0; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Адаптивные планеты */
+    font-size: clamp(1.5rem, 5vw, 2.8rem);
     cursor: pointer;
-    pointer-events: auto;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-    transition: filter 0.3s;
+    pointer-events: auto; /* Включаем клики обратно */
+    z-index: 2000;
+    transition: transform 0.3s;
+    user-select: none;
 }
 
-.orbiting-planet:hover {
-    filter: drop-shadow(0 0 15px var(--gold));
-}
+.orbiting-planet:hover { transform: translate(-50%, -50%) scale(1.2); }
 
 @keyframes rotate {
     from { transform: translate(-50%, -50%) rotate(0deg); }
     to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* --- ЭКРАН ПЛАНЕТЫ (СВОЙ ФОН) --- */
+/* --- ЭКРАН ПЛАНЕТЫ (АДАПТИВНОСТЬ) --- */
 #planet-screen {
     position: fixed;
-    inset: 0;
-    z-index: 2000;
-    background-size: cover;
-    background-position: center;
-    overflow-y: auto; /* Разрешаем скролл заданий */
+    inset: 0; z-index: 5000;
     padding: 20px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Пример того, как менять фон через классы (добавляй их в JS) */
-.bg-mars { background-image: radial-gradient(circle, #450a0a 0%, #050505 100%); }
-.bg-venice { background-image: radial-gradient(circle, #1e3a8a 0%, #050505 100%); }
+.content-wrapper { width: 100%; max-width: 500px; text-align: center; }
 
-/* --- КАРТОЧКИ ЗАДАНИЙ (ЦВЕТОВАЯ ПАЛИТРА) --- */
-.content-wrapper {
-    width: 100%;
-    max-width: 450px;
-}
-
+/* КАРТОЧКИ ЗАДАНИЙ */
 .char-card {
     background: var(--card-bg);
-    border-left: 4px solid var(--task-blue); /* Цвет полоски */
-    border-radius: 12px;
-    margin-bottom: 15px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 15px;
+    margin: 15px 0;
     padding: 20px;
+    cursor: pointer;
     transition: 0.3s;
 }
 
-.char-card:nth-child(2n) { border-left-color: var(--task-purple); }
-.char-card:nth-child(3n) { border-left-color: var(--task-green); }
+.char-card:nth-child(1) { border-left: 5px solid var(--task-accent-1); }
+.char-card:nth-child(2) { border-left: 5px solid var(--task-accent-2); }
+.char-card:nth-child(3) { border-left: 5px solid var(--task-accent-3); }
 
-.char-card.active {
-    box-shadow: 0 0 20px var(--gold-dim);
-    border-color: var(--gold);
-}
+.char-card.active { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-dim); }
 
-/* --- КНОПКИ (БЕЗ БЕЛОГО) --- */
-.btn-action {
+.start-task-btn, .complete-btn-gold {
     background: transparent;
     border: 1px solid var(--gold);
     color: var(--gold);
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 10px 20px;
+    border-radius: 20px;
     cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-    transition: 0.3s;
+    margin-top: 10px;
 }
 
-.btn-action:hover {
-    background: var(--gold);
-    color: #000;
-}
+.start-task-btn:hover { background: var(--gold); color: black; }
 
-/* --- АДАПТИВНОСТЬ ПОД МОБИЛКИ --- */
-@media (max-width: 600px) {
-    #sun-moon-center { font-size: 50px; }
-    .orbiting-planet { font-size: 1.8rem; }
-    .content-wrapper { padding: 10px; }
-    #wisdom-counter { font-size: 0.9rem; width: 80%; text-align: center; }
-}
-
-/* --- ЭФФЕКТЫ --- */
-.resource-pop {
-    position: fixed;
-    pointer-events: none;
-    animation: resourceFloat 1.2s forwards;
-    font-size: 1.5rem;
-}
-
-@keyframes resourceFloat {
-    0% { transform: scale(1) translateY(0); opacity: 1; }
-    100% { transform: scale(1.5) translateY(-100px); opacity: 0; }
-}
+.hidden { display: none !important; }
