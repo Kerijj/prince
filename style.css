@@ -1,9 +1,10 @@
 :root {
     --gold: #ffd700;
-    --white: #ffffff;
+    --white-soft: #e0e0e0;
     --bg-dark: #050505;
     --dark-glass: rgba(0, 0, 0, 0.85);
-    --border-light: rgba(255, 255, 255, 0.1);
+    --border-gold: rgba(255, 215, 0, 0.3);
+    --star-blue: #add8e6;
 }
 
 /* --- БАЗОВЫЕ СТИЛИ --- */
@@ -13,7 +14,7 @@ body, html {
     width: 100%;
     height: 100%;
     background: var(--bg-dark);
-    color: var(--white);
+    color: var(--gold); /* Основной текст теперь золотой */
     font-family: 'Segoe UI', sans-serif;
     overflow: hidden;
 }
@@ -32,250 +33,57 @@ body, html {
 
 .star {
     position: absolute;
-    background: var(--white);
+    background: #fff;
     border-radius: 50%;
-    /* Эффект пульсации звезд */
     animation: twinkle var(--d) infinite ease-in-out;
 }
 
-/* Стили для центрального объекта */
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.3); }
+}
+
+/* --- ЦЕНТРАЛЬНЫЙ ОБЪЕКТ --- */
 #sun-moon-center {
-    font-size: 60px;
+    font-size: 70px;
     cursor: pointer;
     z-index: 1000;
     transition: all 1s ease-in-out;
     filter: drop-shadow(0 0 20px var(--gold));
     user-select: none;
-}
-
-/* Эффект свечения центра */
-#sun-moon-center {
-    font-size: 70px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 2s ease-in-out;
-    user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Пульсация в режиме медитации */
 .meditation-active #sun-moon-center {
-    transform: scale(1.3);
+    transform: scale(1.4);
     filter: drop-shadow(0 0 60px var(--gold)) !important;
 }
 
-/* Аффирмация (Золотой текст) */
-#affirmation-text {
+/* --- РЕСУРСЫ (НОВОЕ) --- */
+.resource-pop {
     position: fixed;
-    top: 20%;
-    width: 100%;
-    text-align: center;
-    color: var(--gold);
-    font-size: 1.8rem;
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: 1px;
-    opacity: 0;
-    transition: opacity 2s ease-in-out;
-    z-index: 5000;
     pointer-events: none;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-/* Плавное "дыхание" космоса во время медитации */
-.meditation-active #universe-screen {
-    animation: meditationBreath 8s infinite ease-in-out;
-}
-
-@keyframes meditationBreath {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.7; }
-}
-
-/* Режим медитации (пульсация всего экрана) */
-.meditation-active #sun-moon-center {
-    transform: scale(1.5);
-    filter: drop-shadow(0 0 50px var(--gold));
-}
-
-.meditation-active #stars-container {
-    animation: spacePulse 10s infinite ease-in-out;
-}
-
-@keyframes spacePulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; filter: brightness(1.5); }
-}
-
-/* Всплывающая аффирмация */
-#affirmation-text {
-    position: fixed;
-    bottom: 15%;
-    width: 100%;
-    text-align: center;
+    z-index: 1500;
+    font-weight: bold;
+    font-size: 1.2rem;
     color: var(--gold);
-    font-size: 1.5rem;
-    font-style: italic;
-    text-shadow: 0 0 10px black;
-    pointer-events: none;
-    z-index: 5000;
-    transition: opacity 1s;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    animation: resourceFloat 1.5s ease-out forwards;
 }
 
-@keyframes twinkle {
-    0%, 100% { opacity: 0.3; transform: scale(1); filter: blur(0px); }
-    50% { opacity: 0.9; transform: scale(1.3); filter: blur(1px); }
+@keyframes resourceFloat {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
 }
 
-/* --- КОСМОС И ПЛАНЕТЫ --- */
-#universe-screen {
-    position: relative;
-    width: 100%; height: 100vh;
-    z-index: 10;
-}
-
-/* --- ЦВЕТОВАЯ КОРРЕКЦИЯ --- */
-:root {
-    --gold: #ffd700;
-    --star-blue: #add8e6;
-    --bg-dark: #050505;
-    --white-soft: #e0e0e0;
-}
-
-/* Убираем белые цифры и текст, заменяем на золото */
-#wisdom-score, .task-label, #planet-name {
-    color: var(--gold) !important;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-/* --- ОБНОВЛЕННЫЙ ЗВЕЗДОПАД --- */
-.shooting-star {
-    position: absolute;
-    font-size: 20px; /* Размер иконки-звёздочки */
-    color: var(--white-soft);
-    text-shadow: 0 0 10px var(--white-soft), 0 0 20px var(--gold);
-    user-select: none;
-    z-index: 9999;
-}
-
-@keyframes shoot {
-    0% { 
-        transform: translate(0, 0) rotate(0deg) scale(1); 
-        opacity: 0; 
-    }
-    10% { opacity: 1; }
-    100% { 
-        /* Траектория: сверху слева -> в нижний правый угол */
-        transform: translate(100vw, 100vh) rotate(360deg) scale(0.5); 
-        opacity: 0; 
-    }
-}
-
-/* --- КНОПКИ (Убираем белый цвет) --- */
-.fx-unlock-btn, .complete-btn-gold, .start-task-btn {
-    border: 1px solid var(--gold) !important;
-    color: var(--gold) !important;
-    background: rgba(255, 215, 0, 0.05) !important;
-    transition: 0.3s;
-}
-
-.fx-unlock-btn:hover {
-    background: var(--gold) !important;
-    color: black !important;
-    box-shadow: 0 0 20px var(--gold);
-}
-
-/* Убираем белый фон у текста в дневнике */
-textarea {
-    color: var(--gold) !important;
-    border-color: var(--gold) !important;
-    background: rgba(0, 0, 0, 0.4) !important;
-}
-
-#solar-system {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
-/* --- ЦВЕТОВАЯ КОРРЕКЦИЯ --- */
-:root {
-    --gold: #ffd700;
-    --star-blue: #add8e6;
-    --bg-dark: #050505;
-    --white-soft: #e0e0e0;
-}
-
-/* Убираем белые цифры и текст, заменяем на золото */
-#wisdom-score, .task-label, #planet-name {
-    color: var(--gold) !important;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-/* --- ОБНОВЛЕННЫЙ ЗВЕЗДОПАД --- */
-.shooting-star {
-    position: absolute;
-    font-size: 20px; /* Размер иконки-звёздочки */
-    color: var(--white-soft);
-    text-shadow: 0 0 10px var(--white-soft), 0 0 20px var(--gold);
-    user-select: none;
-    z-index: 9999;
-}
-
-@keyframes shoot {
-    0% { 
-        transform: translate(0, 0) rotate(0deg) scale(1); 
-        opacity: 0; 
-    }
-    10% { opacity: 1; }
-    100% { 
-        /* Траектория: сверху слева -> в нижний правый угол */
-        transform: translate(100vw, 100vh) rotate(360deg) scale(0.5); 
-        opacity: 0; 
-    }
-}
-
-/* --- КНОПКИ (Убираем белый цвет) --- */
-.fx-unlock-btn, .complete-btn-gold, .start-task-btn {
-    border: 1px solid var(--gold) !important;
-    color: var(--gold) !important;
-    background: rgba(255, 215, 0, 0.05) !important;
-    transition: 0.3s;
-}
-
-.fx-unlock-btn:hover {
-    background: var(--gold) !important;
-    color: black !important;
-    box-shadow: 0 0 20px var(--gold);
-}
-
-/* Убираем белый фон у текста в дневнике */
-textarea {
-    color: var(--gold) !important;
-    border-color: var(--gold) !important;
-    background: rgba(0, 0, 0, 0.4) !important;
-}
-
+/* --- ПЛАНЕТЫ И ОРБИТЫ --- */
 .orbit {
     position: absolute;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-gold); /* Орбиты теперь золотистые полупрозрачные */
     border-radius: 50%;
     pointer-events: none;
-}
-
-.rotator {
-    position: absolute;
-    animation: rotate linear infinite;
-    pointer-events: none;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
 }
 
 .orbiting-planet {
@@ -286,34 +94,32 @@ textarea {
     cursor: pointer;
     pointer-events: auto;
     z-index: 100;
-    /* Пульсация планет */
     animation: planetPulse 4s infinite ease-in-out;
 }
 
 @keyframes planetPulse {
     0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 5px transparent); }
-    50% { transform: translate(-50%, -50%) scale(1.15); filter: drop-shadow(0 0 15px var(--gold)); }
+    50% { transform: translate(-50%, -50%) scale(1.1); filter: drop-shadow(0 0 15px var(--gold)); }
 }
 
-/* --- ЭФФЕКТЫ (ЗВЕЗДОПАД) --- */
-#fx-layer {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: 9999;
-    pointer-events: none;
+/* --- КНОПКИ (БЕЗ БЕЛОГО) --- */
+.fx-unlock-btn, .complete-btn-gold, .start-task-btn, .close-btn {
+    border: 1px solid var(--gold) !important;
+    color: var(--gold) !important;
+    background: rgba(255, 215, 0, 0.05) !important;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.shooting-star {
-    position: absolute;
-    width: 2px; height: 100px;
-    background: linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1));
-    animation: shoot 1s linear forwards;
-}
-
-@keyframes shoot {
-    0% { transform: translateY(-100px) translateX(0) rotate(-45deg); opacity: 1; }
-    100% { transform: translateY(100vh) translateX(-600px) rotate(-45deg); opacity: 0; }
+.fx-unlock-btn:hover, .complete-btn-gold:hover, .start-task-btn:hover {
+    background: var(--gold) !important;
+    color: black !important;
+    box-shadow: 0 0 20px var(--gold);
 }
 
 /* --- ИНТЕРФЕЙС ПЛАНЕТЫ --- */
@@ -322,88 +128,31 @@ textarea {
     top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 2000;
-    overflow-y: auto;
     backdrop-filter: blur(15px);
-    background: rgba(0, 0, 0, 0.6);
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.content-wrapper {
-    max-width: 500px;
-    margin: 0 auto;
-    padding-bottom: 50px;
-}
-
-.glow-text {
-    text-shadow: 0 0 20px var(--gold);
+    background: rgba(0, 0, 0, 0.8);
     color: var(--gold);
-    font-size: 2.5rem;
-    text-align: center;
 }
 
-/* --- КАРТОЧКИ И ЗАДАНИЯ --- */
+/* Убираем белые рамки у карточек */
 .char-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-light);
+    background: rgba(255, 215, 0, 0.05);
+    border: 1px solid var(--border-gold);
     border-radius: 15px;
-    margin-bottom: 12px;
-    padding: 18px;
-    cursor: pointer;
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--gold);
 }
 
 .char-card.active {
-    background: rgba(255, 215, 0, 0.1);
     border-color: var(--gold);
-    transform: scale(1.02);
+    box-shadow: inset 0 0 15px rgba(255, 215, 0, 0.2);
 }
 
-.char-details {
-    display: none;
-    margin-top: 15px;
-    text-align: center;
-    border-top: 1px solid var(--border-light);
-    padding-top: 10px;
-}
-
-.char-card.active .char-details { display: block; }
-
-.task-card-dark {
-    background: var(--dark-glass);
-    border: 1px solid var(--gold);
-    border-radius: 20px;
-    padding: 25px;
-    margin-top: 20px;
-    text-align: center;
-}
-
-.complete-btn-gold, .start-task-btn, .fx-unlock-btn {
-    background: transparent;
+/* Дневник */
+textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--gold);
     color: var(--gold);
-    padding: 10px 25px;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.complete-btn-gold:hover, .fx-unlock-btn:hover {
-    background: var(--gold);
-    color: black;
-    box-shadow: 0 0 20px var(--gold);
-}
-
-/* --- ВЕРХНИЙ СЧЕТЧИК --- */
-#wisdom-counter {
-    position: fixed;
-    top: 20px; left: 20px;
-    font-size: 1.1rem;
-    z-index: 3000;
-    background: rgba(0,0,0,0.7);
-    border: 1px solid var(--gold);
-    padding: 8px 18px;
-    border-radius: 25px;
-    color: var(--gold);
+    border-radius: 10px;
+    padding: 10px;
+    outline: none;
 }
