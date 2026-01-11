@@ -83,6 +83,53 @@ function openPlanet(idx) {
     checkFXUnlocks();
 }
 
+function renderSolarSystem() {
+    const system = document.getElementById('solar-system');
+    if (!system) return;
+    
+    // Центр
+    system.innerHTML = `
+        <div id="sun-moon-center" onclick="toggleMeditation()">
+            <span id="celestial-body">☀️</span>
+            <audio id="meditation-audio" loop>
+                <source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Arrival.mp3" type="audio/mpeg">
+            </audio>
+        </div>`;
+
+    planetData.forEach((p, i) => {
+        const orbitSize = 140 + (i * 60); // Чуть уменьшил для адаптивности
+        const duration = 20 + (i * 8);
+        
+        // Рисуем орбиту
+        const orbit = document.createElement('div');
+        orbit.className = 'orbit';
+        orbit.style.width = orbitSize + 'px'; 
+        orbit.style.height = orbitSize + 'px';
+        system.appendChild(orbit);
+
+        // Рисуем ротатор
+        const rotator = document.createElement('div');
+        rotator.className = 'rotator';
+        rotator.style.width = orbitSize + 'px'; 
+        rotator.style.height = orbitSize + 'px';
+        rotator.style.animationDuration = duration + 's';
+
+        // Рисуем планету
+        const planet = document.createElement('div');
+        planet.className = 'orbiting-planet';
+        planet.innerHTML = p.icon;
+        
+        // Клик теперь точно сработает
+        planet.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openPlanet(i);
+        });
+
+        rotator.appendChild(planet);
+        system.appendChild(rotator);
+    });
+}
+
 function goToUniverse() {
     document.getElementById('planet-screen').classList.add('hidden');
     document.getElementById('universe-screen').classList.remove('hidden');
