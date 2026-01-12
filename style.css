@@ -15,6 +15,84 @@
     100% { transform: translate(80vw, 80vh) rotate(360deg); opacity: 0; }
 }
 
+/* --- АНИМАЦИЯ МЕТЕОРИТНОГО ДОЖДЯ --- */
+@keyframes shoot {
+    0% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0; 
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { 
+        transform: translate(120vw, 120vh) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
+.shooting-star {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    font-size: 24px;
+    filter: drop-shadow(0 0 10px var(--gold));
+    color: var(--gold);
+}
+
+/* --- МОБИЛЬНАЯ АДАПТАЦИЯ --- */
+@media (max-width: 768px) {
+    /* Уменьшаем масштаб всей системы, чтобы она влезла в экран */
+    #solar-system {
+        transform: scale(0.5); 
+        transform-origin: center center;
+    }
+
+    #universe-screen {
+        overflow: hidden; /* Чтобы орбиты не создавали прокрутку */
+    }
+
+    /* Увеличиваем кликабельные зоны для пальцев */
+    .orbiting-planet {
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+    }
+
+    /* Экран планеты под телефон */
+    #planet-screen {
+        padding: 10px;
+        overflow-y: auto;
+    }
+
+    #planet-name {
+        font-size: 1.8rem;
+    }
+
+    #characters-list {
+        width: 100%;
+        padding: 5px;
+    }
+
+    .char-card {
+        margin: 10px 0;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Дневник на мобильных */
+    #diary-box {
+        width: 100%;
+        height: 70vh;
+        left: 0;
+        transform: none;
+        border-radius: 20px 20px 0 0;
+    }
+    
+    #diary-box.hidden {
+        transform: translateY(100%);
+        left: 0;
+    }
+}
+
 .shooting-star {
     position: fixed;
     pointer-events: none;
