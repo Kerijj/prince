@@ -1274,17 +1274,31 @@ function createStars() {
         container.appendChild(s);
     }
 }
-
 function launchStarfall() {
     const layer = document.getElementById('fx-layer');
     if (!layer) return;
-    const s = document.createElement('div');
-    s.className = 'shooting-star';
-    s.innerHTML = '✦';
-    s.style.left = Math.random() * 80 + 'vw';
-    s.style.top = '-5vh';
-    layer.appendChild(s);
-    setTimeout(() => s.remove(), 2000);
+
+    // Запускаем 15 метеоритов с разной задержкой
+    for (let i = 0; i < 15; i++) {
+        setTimeout(() => {
+            const s = document.createElement('div');
+            s.className = 'shooting-star';
+            s.innerHTML = '✨'; // Можно использовать ✦ или ✨
+            
+            // Появление в случайных местах сверху и слева
+            s.style.left = Math.random() * 100 + 'vw';
+            s.style.top = '-5vh';
+            
+            // Случайная скорость
+            const duration = 1 + Math.random() * 1.5;
+            s.style.animation = `shoot ${duration}s linear forwards`;
+            
+            layer.appendChild(s);
+            
+            // Удаление после завершения
+            setTimeout(() => s.remove(), duration * 1000);
+        }, i * 200); // Интервал между звездами
+    }
 }
 
 function updateCelestialBody() {
