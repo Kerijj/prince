@@ -1457,4 +1457,41 @@ function completeTask() {
     }
 }
 
+let currentTaskIndex = 0; // Номер текущего задания персонажа
+let currentActiveChar = null; // Какой персонаж выбран
+
+function openCharTasks(charIndex) {
+    currentActiveChar = currentPlanet.chars[charIndex];
+    currentTaskIndex = 0; // Начинаем с первого задания
+    renderTaskCard();
+}
+
+function renderTaskCard() {
+    const task = currentActiveChar.tasks[currentTaskIndex];
+    const container = document.getElementById('task-container');
+    
+    container.innerHTML = `
+        <div class="task-card animated fadeIn">
+            <h3>Задание от: ${currentActiveChar.name}</h3>
+            <p class="task-text">${task}</p>
+            <button onclick="nextTask()">Я сделал это</button>
+            <div class="progress-bar">
+                Задание ${currentTaskIndex + 1} из ${currentActiveChar.tasks.length}
+            </div>
+        </div>
+    `;
+}
+
+function nextTask() {
+    currentTaskIndex++;
+    if (currentTaskIndex < currentActiveChar.tasks.length) {
+        renderTaskCard();
+    } else {
+        alert("Поздравляю! Ты прошел путь этого персонажа.");
+        showPlanetMenu(); // Возврат к выбору персонажей на планете
+    }
+}
+
+
+
 
