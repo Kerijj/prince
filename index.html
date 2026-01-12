@@ -24,6 +24,26 @@
     </section>
 
     <section id="planet-screen" class="hidden"></section>
+    
+    <section id="planet-screen" class="hidden">
+        <div class="planet-header">
+            <button class="glass-btn" onclick="goToUniverse()">← Назад в космос</button>
+            <h1 id="planet-name">Название планеты</h1>
+            <p id="planet-desc">Описание планеты появится здесь...</p>
+        </div>
+
+        <div id="characters-list"></div>
+
+        <div id="task-area" class="hidden scale-up">
+            <div class="single-task-card">
+                <p id="task-text">Задание...</p>
+                <div class="progress-container">
+                    <div id="task-progress" class="progress-bar" style="width: 0%"></div>
+                </div>
+                <button class="complete-btn-gold" onclick="completeTask()">Выполнено</button>
+            </div>
+        </div>
+    </section>
 
     <div id="diary-box" class="hidden slide-up">
         <div class="diary-header">
