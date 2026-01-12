@@ -1112,6 +1112,56 @@ function init() {
 function renderSolarSystem() {
     const system = document.getElementById('solar-system');
     if (!system) return;
+    
+    // Очищаем старое, оставляя только центр
+    system.innerHTML = `
+        <div id="sun-moon-center" onclick="toggleMeditation()">
+            <span id="celestial-body">☀️</span>
+            <audio id="meditation-audio" loop>
+                <source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Arrival.mp3" type="audio/mpeg">
+            </audio>
+        </div>`;
+
+    planetData.forEach((p, i) => {
+        const orbitSize = 160 + (i * 65);
+        const duration = 25 + (i * 10);
+        
+        // Рисуем линию орбиты
+        const orbit = document.createElement('div');
+        orbit.className = 'orbit';
+        orbit.style.width = orbitSize + 'px';
+        orbit.style.height = orbitSize + 'px';
+        system.appendChild(orbit);
+
+        // Создаем вращающийся контейнер
+        const rotator = document.createElement('div');
+        rotator.className = 'rotator';
+        rotator.style.width = orbitSize + 'px';
+        rotator.style.height = orbitSize + 'px';
+        rotator.style.animationDuration = duration + 's';
+
+        // Создаем саму планету
+        const planet = document.createElement('div');
+        planet.className = 'orbiting-planet';
+        planet.innerHTML = p.icon;
+        
+        // Важно: привязываем клик напрямую
+        planet.addEventListener('click', (e) => {
+            e.stopPropagation(); // Остановить всплытие клика
+            openPlanet(i);
+        });
+
+        rotator.appendChild(planet);
+        system.appendChild(rotator);
+    });
+    
+    updateCelestialBody(); // Сразу ставим правильную иконку (солнце/луна)
+}
+
+
+function renderSolarSystem() {
+    const system = document.getElementById('solar-system');
+    if (!system) return;
     system.innerHTML = '<div id="sun-moon-center" onclick="toggleMeditation()"><span id="celestial-body">☀️</span><audio id="meditation-audio" loop><source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Arrival.mp3" type="audio/mpeg"></audio></div>';
 
     planetData.forEach((p, i) => {
