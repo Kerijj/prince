@@ -1336,6 +1336,85 @@ function checkFXUnlocks() {
     }
 }
 
+// Функция для начала или показа текущего задания
+function startTasksInline(cIdx) {
+    activeCIdx = cIdx;
+    // Сбрасываем индекс задания при первом клике на "Помочь", 
+    // если это новый персонаж, или оставляем текущий
+    if (taskIdx === undefined) taskIdx = 0; 
+
+    const char = planetData[activePIdx].chars[cIdx];
+    const container = document.getElementById(`task-container-${cIdx}`);
+    
+    // Проверяем, остались ли задания
+    if (taskIdx < char.tasks.length) {
+        container.innerHTML = `
+            <div class="char-task-inline">
+                <p style="margin: 15px 0; color: var(--gold-bright);">
+                    <b>Задание ${taskIdx + 1}/${char.tasks.length}:</b><br>
+                    ${char.tasks[taskIdx]}
+                </p>
+                <button class="complete-btn-gold" onclick="completeTaskInline(${cIdx})">Выполнено</button>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `<p style="color: var(--gold); padding: 10px;">✨ Все задания выполнены! Мы теперь лучшие друзья.</p>`;
+    }
+}
+
+// Функция завершения текущего задания и автоматического перехода к следующему
+function completeTaskInline(cIdx) {
+    const char = planetData[activePIdx].chars[cIdx];
+    
+    // 1. Начисляем мудрость
+    gameState.wisdom++;
+    save();
+    updateUI();
+    
+    // 2. Эффект успеха
+    launchStarfall();
+
+    // 3. Переходим к следующему заданию
+    taskIdx++;
+
+    // 4. Автоматически обновляем область заданий под персонажем
+    startTasksInline(cIdx);
+    
+    // Проверка на разблокировку спец-эффектов
+    checkFXUnlocks();
+}
+
+// В функцию openPlanet добавь обнуление индекса заданий при открытии планеты
+function openPlanet(idx) {
+    activePIdx = idx;
+    taskIdx = 0; // Сбрасываем прогресс заданий при входе на планету
+    
+    const p = planetData[idx];
+    document.getElementById('universe-screen').classList.add('hidden');
+    const screen = document.getElementById('planet-screen');
+    screen.classList.remove('hidden');
+    screen.style.background = p.bg || 'radial-gradient(circle, #1a1a2e, #000)';
+
+    document.getElementById('planet-name').innerText = p.name;
+    document.getElementById('planet-desc').innerText = p.desc;
+
+    const list = document.getElementById('characters-list');
+    list.innerHTML = ''; 
+
+    p.chars.forEach((char, cIdx) => {
+        const card = document.createElement('div');
+        card.className = 'char-card';
+        card.innerHTML = `
+            <h3>${char.name}</h3>
+            <p>${char.about}</p>
+            <div id="task-container-${cIdx}">
+                <button class="glass-btn" onclick="startTasksInline(${cIdx})">Помочь</button>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
 // Запуск
 init();
 
