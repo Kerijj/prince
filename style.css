@@ -208,7 +208,51 @@ button {
     background: rgba(0, 0, 0, 0.4);
 }
 
+/* Стили для поля ввода в дневнике */
+#note-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05); /* Почти прозрачный фон */
+    border: 1px solid var(--gold-dim);
+    border-radius: 8px;
+    padding: 10px;
+    color: var(--gold); /* Золотой текст при печати */
+    font-family: inherit;
+    box-sizing: border-box; /* Чтобы паддинги не раздували ширину */
+    margin-bottom: 10px;
+    outline: none;
+    transition: 0.3s;
+}
 
+#note-input:focus {
+    border-color: var(--gold);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px var(--gold-dim);
+}
+
+/* Цвет подсказки (placeholder) внутри поля */
+#note-input::placeholder {
+    color: rgba(255, 215, 0, 0.4);
+}
+
+/* Стиль самих заметок в списке */
+.note-item {
+    background: rgba(255, 215, 0, 0.05);
+    border-bottom: 1px solid var(--gold-dim);
+    padding: 8px;
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.note-item button {
+    background: none;
+    color: #ff4d4d; /* Красный крестик для удаления */
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 5px;
+}
 
 
 
