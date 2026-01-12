@@ -98,6 +98,51 @@ function startTasks(cIdx) {
     showTask();
 }
 
+
+// Функция отрисовки персонажей на планете
+function openPlanet(idx) {
+    activePIdx = idx;
+    const p = planetData[idx];
+    document.getElementById('universe-screen').classList.add('hidden');
+    document.getElementById('planet-screen').classList.remove('hidden');
+    document.getElementById('planet-screen').style.background = p.bg;
+    document.getElementById('planet-name').innerText = p.name;
+    document.getElementById('planet-desc').innerText = p.desc;
+
+    const list = document.getElementById('characters-list');
+    list.innerHTML = '';
+    
+    p.chars.forEach((c, i) => {
+        const card = document.createElement('div');
+        // Добавляем класс анимации fade-in
+        card.className = 'char-card fade-in'; 
+        card.innerHTML = `
+            <h3>${c.name}</h3>
+            <p>${c.about}</p>
+            <button class="action-btn" onclick="startTasks(${i})">Помочь</button>
+        `;
+        list.appendChild(card);
+    });
+    
+    // Прячем зону задач при входе на новую планету
+    document.getElementById('task-area').classList.add('hidden');
+    checkFXUnlocks();
+}
+
+// ПРОВЕРЕНО: Функция возврата к звездам
+function goToUniverse() {
+    const planetScreen = document.getElementById('planet-screen');
+    const universeScreen = document.getElementById('universe-screen');
+    
+    planetScreen.classList.add('hidden');
+    universeScreen.classList.remove('hidden');
+    
+    // Сбрасываем индексы, чтобы всё было чисто
+    activePIdx = -1;
+    activeCIdx = -1;
+}
+
+
 function showTask() {
     const char = planetData[activePIdx].chars[activeCIdx];
     const text = document.getElementById('task-text');
