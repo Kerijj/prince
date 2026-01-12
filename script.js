@@ -1225,5 +1225,165 @@ function goToUniverse() {
     }, 300);
 }
 
+/* --- СОСТОЯНИЕ ИГРЫ --- */
+let gameState = JSON.parse(localStorage.getItem('prince_wisdom_save')) || {
+    wisdom: 0,
+    notes: []
+};
+
+let activePIdx = -1; // Индекс текущей планеты
+let activeCIdx = null; // Индекс выбранного персонажа
+let taskIdx = 0; // Номер текущего задания
+
+/* --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ --- */
+window.onload = () => {
+    updateUI();
+    createStars(); // Создает фоновые звезды
+    renderUniverse(); // Отрисовывает планеты в космосе
+};
+
+/* --- ЛОГИКА ПЛАНЕТ И ПЕРСОНАЖЕЙ --- */
+
+function openPlanet(idx) {
+    activePIdx = idx;
+    activeCIdx = null; 
+    taskIdx = 0; 
+    
+    const p = planetData[idx];
+    const universe = document.getElementById('universe-screen'); // Исправлено под твой HTML
+    const screen = document.getElementById('planet-screen');
+    
+    universe.style.opacity = '0';
+    setTimeout(() => {
+        universe.classList.add('hidden');
+        screen.classList.remove('hidden');
+        screen.style.opacity = '1';
+        // Устанавливаем красивый фон планеты
+        screen.style.background = p.bg || 'radial-gradient(circle, #1a1a2e, #000)';
+        renderPlanetContent();
+    }, 300);
+}
+
+function renderPlanetContent() {
+    const planet = planetData[activePIdx];
+    const screen = document.getElementById('planet-screen');
+    
+    if (activeCIdx === null) {
+        // СОСТОЯНИЕ А: Список персонажей
+        screen.innerHTML = `
+            <div class="fade-in content-wrapper">
+                <button class="back-btn glass-btn" onclick="goToUniverse()">← Вернуться к звездам</button>
+                <h1 style="font-size: 3rem; color: var(--gold);">${planet.name}</h1>
+                <p style="max-width: 700px; margin: 20px auto; line-height: 1.6;">${planet.desc}</p>
+                
+                <div class="char-grid">
+                    ${planet.chars.map((char, i) => `
+                        <div class="char-preview-card" onclick="startTasks(${i})">
+                            <div class="char-icon">${char.icon || '✨'}</div>
+                            <h3>${char.name}</h3>
+                            <p>${char.about.substring(0, 80)}...</p>
+                            <button class="action-btn">Начать путь</button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    } else {
+        // СОСТОЯНИЕ Б: Карточка задания
+        const char = planet.chars[activeCIdx];
+        const isLastTask = taskIdx >= char.tasks.length;
+        const progress = (taskIdx / char.tasks.length) * 100;
+
+        screen.innerHTML = `
+            <div class="fade-in task-container">
+                <button class="back-btn glass-btn" onclick="backToChars()">← К персонажам</button>
+                
+                <div class="single-task-card scale-up">
+                    <div class="task-nav-info">Путь ${char.name} • Ступень ${taskIdx + 1}/${char.tasks.length}</div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${progress}%"></div>
+                    </div>
+
+                    <div class="task-main-text">
+                        ${isLastTask ? `✨ Вы познали мудрость этого пути.` : char.tasks[taskIdx]}
+                    </div>
+
+                    ${!isLastTask ? 
+                        `<button class="action-btn gold-pulse" onclick="completeTask()">Я ВЫПОЛНИЛ</button>` : 
+                        `<button class="action-btn" onclick="backToChars()">ЗАВЕРШИТЬ</button>`
+                    }
+                </div>
+            </div>
+        `;
+    }
+}
+
+function startTasks(cIdx) {
+    activeCIdx = cIdx;
+    taskIdx = 0;
+    renderPlanetContent();
+}
+
+function completeTask() {
+    const char = planetData[activePIdx].chars[activeCIdx];
+    const card = document.querySelector('.single-task-card');
+    
+    card.classList.add('success-flash'); // Добавь этот класс в CSS для вспышки
+
+    setTimeout(() => {
+        gameState.wisdom++;
+        taskIdx++;
+        
+        if (taskIdx === char.tasks.length) {
+            launchStarfall(); 
+        }
+        
+        save();
+        updateUI();
+        renderPlanetContent();
+    }, 300);
+}
+
+function backToChars() {
+    activeCIdx = null;
+    renderPlanetContent();
+}
+
+function goToUniverse() {
+    const universe = document.getElementById('universe-screen');
+    const screen = document.getElementById('planet-screen');
+    
+    screen.style.opacity = '0';
+    setTimeout(() => {
+        screen.classList.add('hidden');
+        universe.classList.remove('hidden');
+        universe.style.opacity = '1';
+        activePIdx = -1;
+    }, 300);
+}
+
+/* --- СИСТЕМНЫЕ ФУНКЦИИ --- */
+
+function save() {
+    localStorage.setItem('prince_wisdom_save', JSON.stringify(gameState));
+}
+
+function updateUI() {
+    document.getElementById('wisdom-score').innerText = gameState.wisdom;
+}
+
+function launchStarfall() {
+    // Простейшая визуализация успеха
+    const fx = document.getElementById('fx-layer');
+    fx.innerHTML = '<div class="starfall-msg">✨ Звезды улыбаются вам! ✨</div>';
+    setTimeout(() => fx.innerHTML = '', 3000);
+}
+
+// Заглушка для дневника (чтобы не было ошибок при клике)
+function toggleDiary() {
+    document.getElementById('diary-box').classList.toggle('hidden');
+}
+
 
 
