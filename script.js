@@ -1065,36 +1065,38 @@ const planetData = [
 ];
 
 
-const foxPhrases = ["Зорко одно лишь сердце.", "Ты в ответе за тех, кого приручил.", 
-"Я в гармонии со Вселенной", "Моё сердце открыто чуду", "Тишина рождает свет",
-"Я — единственный цветок в саду своей души", 
-"Я зорко смотрю сердцем, обходя ловушки глаз", 
-"В самой большой пустыне всегда спрятан колодец", 
-"Мои шипы — это лишь способ защитить мою нежность", 
-"Я привожу свою планету в порядок каждое утро", 
-"Моё время делает мою Розу единственной в мире", 
-"Я не боюсь гусениц, ведь я жду встречи с бабочками", 
-"Всё самое главное невидимо для глаз", 
-"Я создаю узы, которые наполняют жизнь смыслом", 
-"Моя планета достаточно велика для счастья", 
-"Я верен своему свету, даже если мир вращается слишком быстро", 
-"Звезды смеются для того, кто умеет на них смотреть", 
-"Я в ответе за тех, кого я приручил", 
-"Мой внутренний ребенок знает дорогу к истине",
-"Вода может быть нужна и моему сердцу", 
-"Я нахожу красоту в простых и верных вещах", 
-"Я бережно выпалываю ростки баобабов в своих мыслях", 
-"Каждый закат приносит мне мудрость и покой", 
-"Я — странник, ищущий вечное в эфемерном", 
-"Моё сердце — самый точный компас во Вселенной", 
-"Я разрешаю себе просто быть и светить", 
-"В тишине космоса я слышу музыку сфер", 
-"Я наполняю свой день смыслом, а не цифрами", 
-"Моё присутствие согревает мою маленькую планету, 
-"У каждого свои звезды."];
+// 1. ДАННЫЕ АФФИРМАЦИЙ
+const foxPhrases = [
+    "Зорко одно лишь сердце.", "Ты в ответе за тех, кого приручил.", 
+    "Я в гармонии со Вселенной", "Моё сердце открыто чуду", "Тишина рождает свет",
+    "Я — единственный цветок в саду своей души", 
+    "Я зорко смотрю сердцем, обходя ловушки глаз", 
+    "В самой большой пустыне всегда спрятан колодец", 
+    "Мои шипы — это лишь способ защитить мою нежность", 
+    "Я привожу свою планету в порядок каждое утро", 
+    "Моё время делает мою Розу единственной в мире", 
+    "Я не боюсь гусениц, ведь я жду встречи с бабочками", 
+    "Всё самое главное невидимо для глаз", 
+    "Я создаю узы, которые наполняют жизнь смыслом", 
+    "Моя планета достаточно велика для счастья", 
+    "Я верен своему свету, даже если мир вращается слишком быстро", 
+    "Звезды смеются для того, кто умеет на них смотреть", 
+    "Я в ответе за тех, кого я приручил", 
+    "Мой внутренний ребенок знает дорогу к истине",
+    "Вода может быть нужна и моему сердцу", 
+    "Я нахожу красоту в простых и верных вещах", 
+    "Я бережно выпалываю ростки баобабов в своих мыслях", 
+    "Каждый закат приносит мне мудрость и покой", 
+    "Я — странник, ищущий вечное в эфемерном", 
+    "Моё сердце — самый точный компас во Вселенной", 
+    "Я разрешаю себе просто быть и светить", 
+    "В тишине космоса я слышу музыку сфер", 
+    "Я наполняю свой день смыслом, а не цифрами", 
+    "Моё присутствие согревает мою маленькую планету", 
+    "У каждого свои звезды."
+];
 
-
-// 1. СОСТОЯНИЕ
+// 2. СОСТОЯНИЕ
 let gameState = JSON.parse(localStorage.getItem('prince_save_final')) || { wisdom: 0, notes: [] };
 let activePIdx = -1;
 let activeCIdx = -1;
@@ -1102,16 +1104,16 @@ let taskIdx = 0;
 let isMeditation = false;
 let affirmationInterval;
 
-// 2. ИНИЦИАЛИЗАЦИЯ
+// 3. ИНИЦИАЛИЗАЦИЯ
 function init() {
     createStars();
     renderSolarSystem();
     updateUI();
-    // Проверка дня/ночи раз в час
+    checkFXUnlocks();
     setInterval(updateCelestialBody, 3600000); 
 }
 
-// 3. ВСЕЛЕННАЯ
+// 4. ВСЕЛЕННАЯ (ГЛАВНЫЙ ЭКРАН)
 function renderSolarSystem() {
     const system = document.getElementById('solar-system');
     if (!system) return;
@@ -1125,7 +1127,7 @@ function renderSolarSystem() {
         </div>`;
 
     planetData.forEach((p, i) => {
-        const orbitSize = 160 + (i * 70);
+        const orbitSize = window.innerWidth < 600 ? (100 + i * 45) : (160 + i * 70);
         const duration = 25 + (i * 10);
         
         const orbit = document.createElement('div');
@@ -1154,11 +1156,12 @@ function renderSolarSystem() {
     updateCelestialBody();
 }
 
-// 4. ЛОГИКА ПЛАНЕТ И ПЕРСОНАЖЕЙ (Задания внутри!)
+// 5. ЛОГИКА ПЛАНЕТ И ЗАДАНИЙ
 function openPlanet(idx) {
     activePIdx = idx;
-    const p = planetData[idx];
+    taskIdx = 0; // Сброс прогресса при входе на новую планету
     
+    const p = planetData[idx];
     document.getElementById('universe-screen').classList.add('hidden');
     const screen = document.getElementById('planet-screen');
     screen.classList.remove('hidden');
@@ -1167,6 +1170,11 @@ function openPlanet(idx) {
     document.getElementById('planet-name').innerText = p.name;
     document.getElementById('planet-desc').innerText = p.desc;
 
+    renderCharacters();
+}
+
+function renderCharacters() {
+    const p = planetData[activePIdx];
     const list = document.getElementById('characters-list');
     list.innerHTML = ''; 
 
@@ -1189,12 +1197,19 @@ function startTasksInline(cIdx) {
     const char = planetData[activePIdx].chars[cIdx];
     const container = document.getElementById(`task-container-${cIdx}`);
     
-    container.innerHTML = `
-        <div class="char-task-inline">
-            <p style="margin: 15px 0; color: var(--gold-bright);"><b>Задание:</b> ${char.tasks[0]}</p>
-            <button class="complete-btn-gold" onclick="completeTaskInline(${cIdx})">Готово</button>
-        </div>
-    `;
+    if (taskIdx < char.tasks.length) {
+        container.innerHTML = `
+            <div class="char-task-inline">
+                <p style="margin: 15px 0; color: var(--gold-bright); font-size: 0.95rem;">
+                    <b>Задание ${taskIdx + 1}/${char.tasks.length}:</b><br>
+                    ${char.tasks[taskIdx]}
+                </p>
+                <button class="complete-btn-gold" onclick="completeTaskInline(${cIdx})">Выполнено</button>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `<p style="color: var(--gold); padding: 10px;">✨ Мы стали друзьями! Все баобабы выполоты.</p>`;
+    }
 }
 
 function completeTaskInline(cIdx) {
@@ -1202,10 +1217,11 @@ function completeTaskInline(cIdx) {
     save();
     updateUI();
     
-    const container = document.getElementById(`task-container-${cIdx}`);
-    container.innerHTML = `<p style="color: var(--gold); padding: 10px;">✨ Спасибо! Мы стали ближе.</p>`;
+    launchStarfall(5); // Небольшой эффект успеха
     
-    launchStarfall(); // Эффект успеха
+    taskIdx++; // Переходим к следующему заданию
+    startTasksInline(cIdx); // Автоматически обновляем текст задания
+    
     checkFXUnlocks();
 }
 
@@ -1214,13 +1230,90 @@ function goToUniverse() {
     document.getElementById('universe-screen').classList.remove('hidden');
 }
 
-// 5. ДНЕВНИК И ИНТЕРФЕЙС
+// 6. МЕДИТАЦИЯ И ЭФФЕКТЫ
+function toggleMeditation() {
+    const audio = document.getElementById('meditation-audio');
+    isMeditation = !isMeditation;
+    
+    if (isMeditation) {
+        audio.play().catch(() => console.log("Нужен клик для аудио"));
+        document.body.classList.add('meditation-active');
+        startAffirmations();
+    } else {
+        audio.pause();
+        document.body.classList.remove('meditation-active');
+        stopAffirmations();
+    }
+}
+
+function startAffirmations() {
+    let textEl = document.getElementById('affirmation-text') || document.createElement('div');
+    textEl.id = 'affirmation-text'; 
+    document.body.appendChild(textEl);
+    
+    const show = () => {
+        textEl.style.opacity = 0;
+        setTimeout(() => {
+            textEl.innerText = foxPhrases[Math.floor(Math.random() * foxPhrases.length)];
+            textEl.style.opacity = 1;
+        }, 1000);
+    };
+    show();
+    affirmationInterval = setInterval(show, 7000);
+}
+
+function stopAffirmations() {
+    clearInterval(affirmationInterval);
+    const el = document.getElementById('affirmation-text');
+    if (el) el.remove();
+}
+
+function launchStarfall(count = 15) {
+    const layer = document.getElementById('fx-layer');
+    if (!layer) return;
+
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            const s = document.createElement('div');
+            s.className = 'shooting-star';
+            s.innerHTML = '✨'; 
+            s.style.left = Math.random() * 100 + 'vw';
+            s.style.top = '-5vh';
+            
+            const duration = 1 + Math.random() * 1.5;
+            s.style.animation = `shoot ${duration}s linear forwards`;
+            
+            layer.appendChild(s);
+            setTimeout(() => s.remove(), duration * 1000);
+        }, i * 200);
+    }
+}
+
+// 7. СИСТЕМНЫЕ ФУНКЦИИ
+function updateCelestialBody() {
+    const hour = new Date().getHours();
+    const body = document.getElementById('celestial-body');
+    if (body) body.innerHTML = (hour >= 6 && hour < 19) ? '☀️' : '🌙';
+}
+
+function updateUI() {
+    const score = document.getElementById('wisdom-score');
+    if (score) score.innerText = gameState.wisdom;
+    
+    const list = document.getElementById('notes-list');
+    if (list) {
+        list.innerHTML = gameState.notes.map((n, i) => `
+            <div class="note-item">
+                <span>${n}</span>
+                <button onclick="deleteNote(${i})">✕</button>
+            </div>
+        `).join('');
+    }
+}
+
 function toggleDiary() {
     const diary = document.getElementById('diary-box');
-    if (diary) {
-        diary.classList.toggle('hidden');
-        console.log("Diary toggled"); // Для проверки в консоли
-    }
+    if (diary) diary.classList.toggle('hidden');
 }
 
 function saveNote() {
@@ -1239,26 +1332,15 @@ function deleteNote(i) {
     updateUI();
 }
 
-function updateUI() {
-    const score = document.getElementById('wisdom-score');
-    if (score) score.innerText = gameState.wisdom;
-    
-    const list = document.getElementById('notes-list');
-    if (list) {
-        list.innerHTML = gameState.notes.map((n, i) => `
-            <div class="note-item">
-                <span>${n}</span>
-                <button onclick="deleteNote(${i})" style="background:none; border:none; color:var(--gold); cursor:pointer;">✕</button>
-            </div>
-        `).join('');
+function checkFXUnlocks() {
+    const box = document.getElementById('resource-controls');
+    if (box && gameState.wisdom >= 10) {
+        box.innerHTML = '<button class="glass-btn" onclick="launchStarfall(20)">☄️ Вызвать звездопад</button>';
     }
 }
 
-function save() {
-    localStorage.setItem('prince_save_final', JSON.stringify(gameState));
-}
+function save() { localStorage.setItem('prince_save_final', JSON.stringify(gameState)); }
 
-// 6. ЭФФЕКТЫ
 function createStars() {
     const container = document.getElementById('stars-container');
     if (!container) return;
@@ -1271,161 +1353,6 @@ function createStars() {
         container.appendChild(s);
     }
 }
-function launchStarfall() {
-    const layer = document.getElementById('fx-layer');
-    if (!layer) return;
 
-    // Запускаем 15 метеоритов с разной задержкой
-    for (let i = 0; i < 15; i++) {
-        setTimeout(() => {
-            const s = document.createElement('div');
-            s.className = 'shooting-star';
-            s.innerHTML = '✨'; // Можно использовать ✦ или ✨
-            
-            // Появление в случайных местах сверху и слева
-            s.style.left = Math.random() * 100 + 'vw';
-            s.style.top = '-5vh';
-            
-            // Случайная скорость
-            const duration = 1 + Math.random() * 1.5;
-            s.style.animation = `shoot ${duration}s linear forwards`;
-            
-            layer.appendChild(s);
-            
-            // Удаление после завершения
-            setTimeout(() => s.remove(), duration * 1000);
-        }, i * 200); // Интервал между звездами
-    }
-}
-
-function updateCelestialBody() {
-    const hour = new Date().getHours();
-    const body = document.getElementById('celestial-body');
-    if (body) body.innerHTML = (hour >= 6 && hour < 19) ? '☀️' : '🌙';
-}
-
-function toggleMeditation() {
-    const audio = document.getElementById('meditation-audio');
-    isMeditation = !isMeditation;
-    if (isMeditation) {
-        audio.play();
-        document.body.classList.add('meditation-active');
-        startAffirmations();
-    } else {
-        audio.pause();
-        document.body.classList.remove('meditation-active');
-        stopAffirmations();
-    }
-}
-
-function startAffirmations() {
-    let textEl = document.getElementById('affirmation-text') || document.createElement('div');
-    textEl.id = 'affirmation-text'; 
-    document.body.appendChild(textEl);
-    const show = () => {
-        textEl.style.opacity = 0;
-        setTimeout(() => {
-            const affirmations = ["Зорко одно лишь сердце", "Ты навсегда в ответе за тех, кого приручил", "Мы возимся с розами и поэтому они нам дороги"];
-            textEl.innerText = affirmations[Math.floor(Math.random() * affirmations.length)];
-            textEl.style.opacity = 1;
-        }, 1000);
-    };
-    show();
-    affirmationInterval = setInterval(show, 6000);
-}
-
-function stopAffirmations() {
-    clearInterval(affirmationInterval);
-    const el = document.getElementById('affirmation-text');
-    if (el) el.remove();
-}
-
-function checkFXUnlocks() {
-    const box = document.getElementById('resource-controls');
-    if (box && gameState.wisdom >= 10) {
-        box.innerHTML = '<button class="glass-btn" onclick="launchStarfall()">✨ Метеоритный дождь</button>';
-    }
-}
-
-// Функция для начала или показа текущего задания
-function startTasksInline(cIdx) {
-    activeCIdx = cIdx;
-    // Сбрасываем индекс задания при первом клике на "Помочь", 
-    // если это новый персонаж, или оставляем текущий
-    if (taskIdx === undefined) taskIdx = 0; 
-
-    const char = planetData[activePIdx].chars[cIdx];
-    const container = document.getElementById(`task-container-${cIdx}`);
-    
-    // Проверяем, остались ли задания
-    if (taskIdx < char.tasks.length) {
-        container.innerHTML = `
-            <div class="char-task-inline">
-                <p style="margin: 15px 0; color: var(--gold-bright);">
-                    <b>Задание ${taskIdx + 1}/${char.tasks.length}:</b><br>
-                    ${char.tasks[taskIdx]}
-                </p>
-                <button class="complete-btn-gold" onclick="completeTaskInline(${cIdx})">Выполнено</button>
-            </div>
-        `;
-    } else {
-        container.innerHTML = `<p style="color: var(--gold); padding: 10px;">✨ Все задания выполнены! Мы теперь лучшие друзья.</p>`;
-    }
-}
-
-// Функция завершения текущего задания и автоматического перехода к следующему
-function completeTaskInline(cIdx) {
-    const char = planetData[activePIdx].chars[cIdx];
-    
-    // 1. Начисляем мудрость
-    gameState.wisdom++;
-    save();
-    updateUI();
-    
-    // 2. Эффект успеха
-    launchStarfall();
-
-    // 3. Переходим к следующему заданию
-    taskIdx++;
-
-    // 4. Автоматически обновляем область заданий под персонажем
-    startTasksInline(cIdx);
-    
-    // Проверка на разблокировку спец-эффектов
-    checkFXUnlocks();
-}
-
-// В функцию openPlanet добавь обнуление индекса заданий при открытии планеты
-function openPlanet(idx) {
-    activePIdx = idx;
-    taskIdx = 0; // Сбрасываем прогресс заданий при входе на планету
-    
-    const p = planetData[idx];
-    document.getElementById('universe-screen').classList.add('hidden');
-    const screen = document.getElementById('planet-screen');
-    screen.classList.remove('hidden');
-    screen.style.background = p.bg || 'radial-gradient(circle, #1a1a2e, #000)';
-
-    document.getElementById('planet-name').innerText = p.name;
-    document.getElementById('planet-desc').innerText = p.desc;
-
-    const list = document.getElementById('characters-list');
-    list.innerHTML = ''; 
-
-    p.chars.forEach((char, cIdx) => {
-        const card = document.createElement('div');
-        card.className = 'char-card';
-        card.innerHTML = `
-            <h3>${char.name}</h3>
-            <p>${char.about}</p>
-            <div id="task-container-${cIdx}">
-                <button class="glass-btn" onclick="startTasksInline(${cIdx})">Помочь</button>
-            </div>
-        `;
-        list.appendChild(card);
-    });
-}
-
-// Запуск
 init();
 
