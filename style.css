@@ -1,4 +1,4 @@
-/* 1. ПЕРЕМЕННЫЕ И ОСНОВЫ */
+/* 1. ПЕРЕМЕННЫЕ */
 :root {
     --gold: #ffd700;
     --gold-bright: #fff3a3;
@@ -8,52 +8,7 @@
     --glass: rgba(255, 255, 255, 0.1);
 }
 
-
-/* Главный контейнер космоса должен быть доступен для кликов */
-#universe-screen {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    z-index: 10;
-    pointer-events: auto; /* Разрешаем взаимодействие */
-}
-
-/* Орбиты — ПОЛНОСТЬЮ прозрачны для кликов */
-.orbit, .rotator {
-    position: absolute;
-    pointer-events: none !important; 
-    z-index: 5;
-}
-
-/* ПЛАНЕТЫ — должны быть ВЫШЕ орбит и иметь свою область клика */
-.orbiting-planet {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: pointer !important;
-    pointer-events: auto !important; /* Принудительно разрешаем клик */
-    z-index: 1000; /* Максимальный приоритет внутри системы */
-    user-select: none;
-}
-
-/* СЛОЙ ЭФФЕКТОВ — частая причина проблем. Он должен быть "сквозным" */
-#fx-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none !important; /* КРИТИЧЕСКИ ВАЖНО: сквозь него можно кликать */
-    z-index: 9999;
-}
-
-/* Экран планеты, когда он скрыт, не должен мешать */
-#planet-screen.hidden {
-    display: none !important;
-    pointer-events: none;
-}
-
+/* БАЗОВЫЕ СТИЛИ */
 body, html {
     margin: 0; padding: 0;
     width: 100%; height: 100%;
@@ -63,11 +18,65 @@ body, html {
     overflow: hidden;
 }
 
-/* 2. ЗВЕЗДНЫЙ ФОН И ЭФФЕКТЫ */
-#stars-container, #fx-layer { 
-    position: fixed; inset: 0; pointer-events: none; z-index: 0; 
+/* 2. СЛОИ И КЛИКАБЕЛЬНОСТЬ (ГЛАВНОЕ) */
+#universe-screen {
+    position: relative; 
+    width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10;
+    pointer-events: auto;
 }
 
+/* Слой со звездами всегда в самом низу */
+#stars-container {
+    position: fixed; inset: 0; 
+    pointer-events: none; 
+    z-index: 0; 
+}
+
+/* Слой эффектов сверху, но прокликивается */
+#fx-layer {
+    position: fixed; inset: 0; 
+    pointer-events: none !important; 
+    z-index: 9999;
+}
+
+/* Орбиты — ПОЛНОСТЬЮ прозрачны для кликов */
+.orbit, .rotator {
+    position: absolute;
+    pointer-events: none !important; 
+    border: 1px solid var(--gold-dim);
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    animation: rotateOrbit linear infinite;
+    z-index: 5;
+}
+
+/* Сами планеты — ВЫШЕ всего и КЛИКАЮТСЯ */
+.orbiting-planet, .planet-mini {
+    position: absolute;
+    top: -22px; /* Половина размера планеты */
+    width: 45px; height: 45px;
+    background: var(--glass); border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 22px; 
+    cursor: pointer !important; 
+    pointer-events: auto !important; 
+    z-index: 1000;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 10px var(--gold-dim);
+    animation: reverseRotate linear infinite;
+    animation-duration: inherit;
+    user-select: none;
+}
+
+.orbiting-planet:hover, .planet-mini:hover {
+    transform: scale(1.4);
+    box-shadow: 0 0 20px var(--gold);
+    background: rgba(255, 215, 0, 0.2);
+}
+
+/* 3. ЭФФЕКТЫ И ПЕРСОНАЖИ */
 .star {
     position: absolute; background: white; border-radius: 50%;
     animation: twinkle var(--d) infinite ease-in-out;
@@ -78,47 +87,21 @@ body, html {
     50% { opacity: 1; transform: scale(1.2); } 
 }
 
-/* 3. ВСЕЛЕННАЯ (ГЛАВНЫЙ ЭКРАН) */
-#universe-screen {
-    position: relative; width: 100vw; height: 100vh;
-    display: flex; justify-content: center; align-items: center;
-}
-
-.sun {
-    font-size: 50px; z-index: 10;
+#sun-moon-center {
+    font-size: 50px; 
+    z-index: 2000;
     filter: drop-shadow(0 0 25px var(--gold));
+    cursor: pointer;
+    pointer-events: auto;
 }
 
-.orbit {
-    position: absolute; border: 1px solid var(--gold-dim);
-    border-radius: 50%; pointer-events: none;
-    display: flex; justify-content: center; align-items: center;
-    animation: rotateOrbit linear infinite;
-}
-
-.planet-mini {
-    position: absolute; top: -20px;
-    width: 45px; height: 45px;
-    background: var(--glass); border-radius: 50%;
-    display: flex; justify-content: center; align-items: center;
-    font-size: 22px; cursor: pointer; pointer-events: auto;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 0 10px var(--gold-dim);
-    animation: reverseRotate linear infinite;
-    animation-duration: inherit;
-}
-
-.planet-mini:hover {
-    transform: scale(1.4);
-    box-shadow: 0 0 20px var(--gold);
-    background: rgba(255, 215, 0, 0.2);
-}
-
-/* 4. ЭКРАН ПЛАНЕТЫ И ЗАДАНИЯ */
+/* 4. ЭКРАН ПЛАНЕТЫ (ИНТЕРФЕЙС) */
 #planet-screen {
-    position: fixed; inset: 0; z-index: 1500;
+    position: fixed; inset: 0; 
+    z-index: 1500;
     display: flex; flex-direction: column; align-items: center;
-    padding: 40px; overflow-y: auto; background: radial-gradient(circle, #1a1a2e, #000);
+    padding: 40px; overflow-y: auto; 
+    background: radial-gradient(circle, #1a1a2e, #000);
 }
 
 .char-grid {
@@ -126,47 +109,20 @@ body, html {
     gap: 25px; width: 100%; max-width: 1000px; margin-top: 30px;
 }
 
-.char-preview-card {
-    background: var(--card-bg); border: 1px solid var(--gold-dim);
-    border-radius: 15px; padding: 25px; text-align: center;
-    cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
-}
-
-.char-preview-card:hover {
-    transform: translateY(-10px); border-color: var(--gold);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.single-task-card {
-    background: var(--card-bg); border: 1px solid var(--gold);
-    border-radius: 20px; padding: 40px; text-align: center;
-    max-width: 550px; width: 90%; margin-top: 50px;
-    box-shadow: 0 0 40px rgba(0,0,0,0.6);
-}
-
-/* 5. КНОПКИ И ШКАЛА ПРОГРЕССА */
-.glass-btn, .action-btn, .complete-btn-gold {
+/* КНОПКИ */
+.glass-btn, .action-btn, .complete-btn-gold, .start-task-btn {
     background: var(--glass); border: 1px solid var(--gold);
     color: var(--gold); padding: 12px 24px; border-radius: 30px;
     cursor: pointer; transition: 0.3s; text-transform: uppercase;
     font-weight: bold; letter-spacing: 1px;
+    pointer-events: auto;
 }
 
 .glass-btn:hover, .action-btn:hover, .complete-btn-gold:hover {
     background: var(--gold); color: black; box-shadow: 0 0 20px var(--gold);
 }
 
-.progress-container {
-    width: 100%; height: 8px; background: rgba(255,255,255,0.1);
-    border-radius: 4px; margin: 20px 0; overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%; background: var(--gold);
-    transition: width 0.5s ease, box-shadow 0.5s ease;
-}
-
-/* 6. АНИМАЦИИ */
+/* АНИМАЦИИ */
 @keyframes rotateOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes reverseRotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
 
@@ -178,13 +134,7 @@ body, html {
 
 @keyframes shootingAnim {
     0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-600px, 600px) scale(0); opacity: 0; }
+    100% { transform: translate(100vw, 100vh) scale(0); opacity: 0; }
 }
 
 .hidden { display: none !important; }
-.fade-in { animation: fadeIn 0.8s forwards; }
-.scale-up { animation: scaleUp 0.5s ease-out; }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
