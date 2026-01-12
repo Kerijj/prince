@@ -1338,6 +1338,75 @@ function saveNote() {
 function deleteNote(i) { gameState.notes.splice(i, 1); save(); updateUI(); }
 function toggleDiary() { document.getElementById('diary-box').classList.toggle('hidden'); }
 
+
+// Глобальные переменные для отслеживания текущего состояния
+let activePIdx = null;
+let activeCIdx = null;
+
+function openPlanet(idx) {
+    activePIdx = idx;
+    const p = planetData[idx];
+    
+    document.getElementById('universe-screen').classList.add('hidden');
+    const screen = document.getElementById('planet-screen');
+    screen.classList.remove('hidden');
+    
+    document.getElementById('planet-name').innerText = p.name;
+    document.getElementById('planet-desc').innerText = p.desc;
+
+    const list = document.getElementById('characters-list');
+    list.innerHTML = ''; // Очищаем список
+
+    p.chars.forEach((char, cIdx) => {
+        const charDiv = document.createElement('div');
+        charDiv.className = 'char-card';
+        charDiv.id = `char-${cIdx}`;
+        charDiv.innerHTML = `
+            <h3>${char.name}</h3>
+            <p>${char.about}</p>
+            <button class="glass-btn" onclick="startTasks(${cIdx})">Помочь</button>
+            <div id="task-container-${cIdx}"></div>
+        `;
+        list.appendChild(charDiv);
+    });
+}
+
+function startTasks(cIdx) {
+    activeCIdx = cIdx;
+    const char = planetData[activePIdx].chars[cIdx];
+    
+    // Находим контейнер именно под этим персонажем
+    const taskContainer = document.getElementById(`task-container-${cIdx}`);
+    
+    // Закрываем другие открытые задания (опционально)
+    document.querySelectorAll('[id^="task-container-"]').forEach(el => el.innerHTML = '');
+
+    taskContainer.innerHTML = `
+        <div class="char-task-inline">
+            <p><b>Задание:</b> ${char.tasks[0]}</p> 
+            <button class="complete-btn-gold" onclick="completeTaskInline(${cIdx})">Готово</button>
+        </div>
+    `;
+}
+
+function toggleDiary() {
+    const diary = document.getElementById('diary-box');
+    diary.classList.toggle('hidden');
+}
+
+function completeTaskInline(cIdx) {
+    // Твоя логика начисления мудрости
+    gameState.wisdom += 1;
+    document.getElementById('wisdom-score').innerText = gameState.wisdom;
+    
+    const container = document.getElementById(`task-container-${cIdx}`);
+    container.innerHTML = `<p style="color: var(--gold)">✨ Спасибо за помощь!</p>`;
+    
+    // Можно добавить эффект звездопада здесь
+    createShootingStar();
+}
+
+
 init();
 
 
