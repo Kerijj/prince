@@ -520,3 +520,21 @@ function showTask() {
     80% { opacity: 1; }
     100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
 }
+
+
+.shooting-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    box-shadow: 0 0 10px white, 0 0 20px white;
+    border-radius: 50%;
+    z-index: 999;
+    animation: shooting 2s linear forwards;
+}
+
+@keyframes shooting {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-500px, 500px) scale(0); opacity: 0; }
+}
+    
