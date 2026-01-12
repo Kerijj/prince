@@ -399,18 +399,30 @@ function openPlanet(idx) {
     checkFXUnlocks();
 }
 
-// Исправленная функция показа задачи
 function showTask() {
     const char = planetData[activePIdx].chars[activeCIdx];
-    const area = document.getElementById('task-area');
     const text = document.getElementById('task-text');
-    
-    area.classList.remove('hidden');
+    const progressPercent = (taskIdx / char.tasks.length) * 100;
+
     if (taskIdx < char.tasks.length) {
-        text.innerHTML = `<p style="font-size: 1.2rem; color: #fff;">${char.name} просит:</p>
-                          <h2 style="color: var(--gold);">${char.tasks[taskIdx]}</h2>`;
+        // Динамический цвет: чем ближе к концу, тем ярче сияние
+        const glowIntensity = 5 + (taskIdx * 1); 
+        
+        text.innerHTML = `
+            <div class="progress-container">
+                <div class="progress-bar" style="width: ${progressPercent}%; box-shadow: 0 0 ${glowIntensity}px var(--gold);"></div>
+            </div>
+            <div class="scale-up" style="padding: 10px;">
+                <p style="opacity: 0.5; font-size: 0.8rem;">ЭТАП ПРИРУЧЕНИЯ: ${taskIdx + 1} / ${char.tasks.length}</p>
+                <h2 style="color: var(--gold-bright); transition: 0.5s;">${char.tasks[taskIdx]}</h2>
+            </div>
+        `;
     } else {
-        text.innerHTML = `<h2 style="color: var(--gold);">✨ Мы стали друзьями!</h2>`;
+        text.innerHTML = `
+            <div class="progress-container"><div class="progress-bar" style="width: 100%"></div></div>
+            <h2 class="fade-in" style="color: #fff; text-shadow: 0 0 20px var(--gold);">✨ Ваша связь стала вечной.</h2>
+            <p style="color: var(--gold); font-style: italic;">«Ты навсегда в ответе за всех, кого приручил»</p>
+        `;
     }
 }
 
