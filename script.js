@@ -1384,6 +1384,46 @@ function launchStarfall() {
 function toggleDiary() {
     document.getElementById('diary-box').classList.toggle('hidden');
 }
+// 1. Функция отрисовки системы (вызови её внутри window.onload)
+function renderUniverse() {
+    const system = document.getElementById('solar-system');
+    if (!system) return;
 
+    system.innerHTML = ''; // Очищаем
+
+    // Создаем Солнце (центр системы)
+    const sun = document.createElement('div');
+    sun.className = 'sun';
+    sun.innerHTML = '☀️'; // Или любой другой символ
+    system.appendChild(sun);
+
+    // Отрисовываем планеты из твоего массива planetData
+    planetData.forEach((planet, index) => {
+        const orbit = document.createElement('div');
+        orbit.className = 'orbit';
+        
+        // Распределяем орбиты по радиусу
+        const size = 150 + (index * 80); 
+        orbit.style.width = `${size}px`;
+        orbit.style.height = `${size}px`;
+
+        const planetEl = document.createElement('div');
+        planetEl.className = 'planet-mini';
+        planetEl.innerHTML = planet.icon || '🪐';
+        planetEl.title = planet.name;
+        
+        // Добавляем событие клика
+        planetEl.onclick = () => openPlanet(index);
+
+        orbit.appendChild(planetEl);
+        system.appendChild(orbit);
+    });
+}
+
+// 2. Добавь вызов в начало файла или в window.onload
+window.addEventListener('load', () => {
+    renderUniverse();
+    updateUI();
+});
 
 
