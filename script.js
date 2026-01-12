@@ -1,4 +1,4 @@
-// 1. ДАННЫЕ ВСЕЛЕННОЙ
+// 1. ДАННЫЕ
 const planetData = [
     { name: "Б-612", icon: "🌹", bg: "radial-gradient(circle, #4a1c1c, #000)", desc: "Твой дом. Крошечный астероид с тремя вулканами и одной гордой Розой.", chars: [{name: "Роза", about: "Прекрасная, но капризная. Она учит любви.", tasks: ["Полить", "Слушать жалобы"]}, {name: "Маленький Принц", about: "Путешественник с золотыми волосами.", tasks: ["Прочистить вулканы", "Вырвать баобабы"]}] },
     { name: "Король", icon: "👑", bg: "radial-gradient(circle, #2c1e4a, #000)", desc: "Планета 325. Здесь правит монарх.", chars: [{name: "Король", about: "Абсолютный монарх.", tasks: ["Отдать приказ", "Зевнуть"]}] },
@@ -11,7 +11,6 @@ const planetData = [
     { name: "Лис", icon: "🦊", bg: "radial-gradient(circle, #d35400, #2c3e50)", desc: "Особая планета Уз.", chars: [{name: "Лис", about: "Мудрый учитель.", tasks: ["Прийти в 4 часа", "Приручить"]}] }
 ];
 
-const foxPhrases = ["Зорко одно лишь сердце.", "Ты в ответе за тех, кого приручил.", "У каждого свои звезды."];
 const affirmations = ["Я в гармонии со Вселенной", "Моё сердце открыто чуду", "Тишина рождает свет"];
 
 // 2. СОСТОЯНИЕ
@@ -22,19 +21,25 @@ let activePIdx = -1, activeCIdx = -1, taskIdx = 0, isMeditation = false, affirma
 function init() {
     createStars();
     renderSolarSystem();
-    updateCelestialBody();
     updateUI();
-    setInterval(updateCelestialBody, 3600000); 
+    setInterval(updateCelestialBody, 60000); // Проверка солнца/луны каждую минуту
 }
 
 function renderSolarSystem() {
     const system = document.getElementById('solar-system');
     if (!system) return;
-    system.innerHTML = '<div id="sun-moon-center" onclick="toggleMeditation()"><span id="celestial-body">☀️</span><audio id="meditation-audio" loop><source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Arrival.mp3" type="audio/mpeg"></audio></div>';
+
+    system.innerHTML = `
+        <div id="sun-moon-center" onclick="toggleMeditation()">
+            <span id="celestial-body">☀️</span>
+            <audio id="meditation-audio" loop>
+                <source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Arrival.mp3" type="audio/mpeg">
+            </audio>
+        </div>`;
 
     planetData.forEach((p, i) => {
-        const orbitSize = 160 + (i * 65);
-        const duration = 25 + (i * 10);
+        const orbitSize = 150 + (i * 60);
+        const duration = 20 + (i * 10);
         
         const orbit = document.createElement('div');
         orbit.className = 'orbit';
@@ -49,15 +54,14 @@ function renderSolarSystem() {
         const planet = document.createElement('div');
         planet.className = 'orbiting-planet';
         planet.innerHTML = p.icon;
-        planet.onclick = () => openPlanet(i);
+        planet.onclick = (e) => { e.stopPropagation(); openPlanet(i); };
 
         rotator.appendChild(planet);
         system.appendChild(rotator);
     });
-    updateCelestialBody(); // Чтобы центр сразу стал солнцем/луной
+    updateCelestialBody();
 }
 
-// 4. ПЛАНЕТЫ И ЗАДАНИЯ
 function openPlanet(idx) {
     activePIdx = idx;
     const p = planetData[idx];
@@ -72,62 +76,14 @@ function openPlanet(idx) {
     p.chars.forEach((c, i) => {
         const card = document.createElement('div');
         card.className = 'char-card';
-        card.innerHTML = `<p>${c.name}</p><div class="char-details"><p>${c.about}</p><button class="start-task-btn" onclick="startTasks(${i}); event.stopPropagation();">Помочь</button></div>`;
-        card.onclick = () => {
-            document.querySelectorAll('.char-card').forEach(el => el.classList.remove('active'));
-            card.classList.add('active');
-        };
+        card.innerHTML = `
+            <strong>${c.name}</strong>
+            <p>${c.about}</p>
+            <button class="start-task-btn" onclick="startTasks(${i})">Помочь</button>`;
         list.appendChild(card);
     });
     document.getElementById('task-area').classList.add('hidden');
     checkFXUnlocks();
-}
-
-function renderSolarSystem() {
-    const system = document.getElementById('solar-system');
-    if (!system) return;
-    
-    // Центр
-    system.innerHTML = `
-        <div id="sun-moon-center" onclick="toggleMeditation()">
-            <span id="celestial-body">☀️</span>
-            <audio id="meditation-audio" loop>
-                <source src="https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Arrival.mp3" type="audio/mpeg">
-            </audio>
-        </div>`;
-
-    planetData.forEach((p, i) => {
-        const orbitSize = 140 + (i * 60); // Чуть уменьшил для адаптивности
-        const duration = 20 + (i * 8);
-        
-        // Рисуем орбиту
-        const orbit = document.createElement('div');
-        orbit.className = 'orbit';
-        orbit.style.width = orbitSize + 'px'; 
-        orbit.style.height = orbitSize + 'px';
-        system.appendChild(orbit);
-
-        // Рисуем ротатор
-        const rotator = document.createElement('div');
-        rotator.className = 'rotator';
-        rotator.style.width = orbitSize + 'px'; 
-        rotator.style.height = orbitSize + 'px';
-        rotator.style.animationDuration = duration + 's';
-
-        // Рисуем планету
-        const planet = document.createElement('div');
-        planet.className = 'orbiting-planet';
-        planet.innerHTML = p.icon;
-        
-        // Клик теперь точно сработает
-        planet.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openPlanet(i);
-        });
-
-        rotator.appendChild(planet);
-        system.appendChild(rotator);
-    });
 }
 
 function goToUniverse() {
@@ -145,7 +101,11 @@ function startTasks(cIdx) {
 function showTask() {
     const char = planetData[activePIdx].chars[activeCIdx];
     const text = document.getElementById('task-text');
-    text.innerText = taskIdx < char.tasks.length ? `${char.name}: ${char.tasks[taskIdx]}` : "Мы стали друзьями!";
+    if (taskIdx < char.tasks.length) {
+        text.innerText = `${char.name} просит: ${char.tasks[taskIdx]}`;
+    } else {
+        text.innerText = "Мы стали друзьями! Ты познал частичку мудрости.";
+    }
 }
 
 function completeTask() {
@@ -160,34 +120,15 @@ function completeTask() {
     }
 }
 
-// 5. ЭФФЕКТЫ И МЕДИТАЦИЯ
 function createStars() {
     const container = document.getElementById('stars-container');
-    if (!container) return;
-    container.innerHTML = '';
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 150; i++) {
         const s = document.createElement('div');
         s.className = 'star';
         s.style.top = Math.random() * 100 + 'vh';
         s.style.left = Math.random() * 100 + 'vw';
         s.style.setProperty('--d', (Math.random() * 3 + 2) + 's');
         container.appendChild(s);
-    }
-}
-
-function launchStarfall() {
-    const layer = document.getElementById('fx-layer');
-    for (let i = 0; i < 15; i++) {
-        setTimeout(() => {
-            const s = document.createElement('div');
-            s.className = 'shooting-star';
-            s.innerHTML = '✦';
-            s.style.left = Math.random() * 50 + 'vw';
-            s.style.top = Math.random() * -20 + 'vh';
-            s.style.animation = 'shoot 1.5s linear forwards';
-            layer.appendChild(s);
-            setTimeout(() => s.remove(), 1500);
-        }, i * 300);
     }
 }
 
@@ -201,7 +142,7 @@ function toggleMeditation() {
     const audio = document.getElementById('meditation-audio');
     isMeditation = !isMeditation;
     if (isMeditation) {
-        audio.play();
+        audio.play().catch(e => console.log("Музыка ждет клика"));
         document.body.classList.add('meditation-active');
         startAffirmations();
     } else {
@@ -213,7 +154,8 @@ function toggleMeditation() {
 
 function startAffirmations() {
     let textEl = document.getElementById('affirmation-text') || document.createElement('div');
-    textEl.id = 'affirmation-text'; document.body.appendChild(textEl);
+    textEl.id = 'affirmation-text'; 
+    document.body.appendChild(textEl);
     const show = () => {
         textEl.style.opacity = 0;
         setTimeout(() => {
@@ -231,7 +173,6 @@ function stopAffirmations() {
     if (el) el.remove();
 }
 
-// 6. СИСТЕМНЫЕ
 function checkFXUnlocks() {
     const box = document.getElementById('resource-controls');
     if (box && gameState.wisdom >= 10) {
@@ -239,18 +180,47 @@ function checkFXUnlocks() {
     }
 }
 
+function launchStarfall() {
+    const layer = document.getElementById('fx-layer');
+    for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+            const s = document.createElement('div');
+            s.className = 'shooting-star';
+            s.innerHTML = '✦';
+            s.style.left = Math.random() * 80 + 'vw';
+            s.style.top = '-20px';
+            s.style.animation = 'shoot 1.5s linear forwards';
+            layer.appendChild(s);
+            setTimeout(() => s.remove(), 1500);
+        }, i * 400);
+    }
+}
+
 function updateUI() {
-    document.getElementById('wisdom-score').innerText = gameState.wisdom;
+    const score = document.getElementById('wisdom-score');
+    if (score) score.innerText = gameState.wisdom;
     const list = document.getElementById('notes-list');
-    if (list) list.innerHTML = gameState.notes.map((n, i) => `<div class="note-item">${n} <span onclick="deleteNote(${i})">✕</span></div>`).join('');
+    if (list) list.innerHTML = gameState.notes.map((n, i) => `<div class="note-item">${n} <button onclick="deleteNote(${i})">✕</button></div>`).join('');
 }
 
 function save() { localStorage.setItem('prince_save_final', JSON.stringify(gameState)); }
+
 function saveNote() {
     const val = document.getElementById('note-input').value;
-    if (val) { gameState.notes.push(val); document.getElementById('note-input').value = ''; save(); updateUI(); }
+    if (val) {
+        gameState.notes.push(val);
+        document.getElementById('note-input').value = '';
+        save(); updateUI();
+    }
 }
-function deleteNote(i) { gameState.notes.splice(i, 1); save(); updateUI(); }
-function toggleDiary() { document.getElementById('diary-box').classList.toggle('hidden'); }
 
-init();
+function deleteNote(i) {
+    gameState.notes.splice(i, 1);
+    save(); updateUI();
+}
+
+function toggleDiary() {
+    document.getElementById('diary-box').classList.toggle('hidden');
+}
+
+window.onload = init;
