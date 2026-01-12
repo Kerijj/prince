@@ -8,6 +8,52 @@
     --glass: rgba(255, 255, 255, 0.1);
 }
 
+
+/* Главный контейнер космоса должен быть доступен для кликов */
+#universe-screen {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+    pointer-events: auto; /* Разрешаем взаимодействие */
+}
+
+/* Орбиты — ПОЛНОСТЬЮ прозрачны для кликов */
+.orbit, .rotator {
+    position: absolute;
+    pointer-events: none !important; 
+    z-index: 5;
+}
+
+/* ПЛАНЕТЫ — должны быть ВЫШЕ орбит и иметь свою область клика */
+.orbiting-planet {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer !important;
+    pointer-events: auto !important; /* Принудительно разрешаем клик */
+    z-index: 1000; /* Максимальный приоритет внутри системы */
+    user-select: none;
+}
+
+/* СЛОЙ ЭФФЕКТОВ — частая причина проблем. Он должен быть "сквозным" */
+#fx-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none !important; /* КРИТИЧЕСКИ ВАЖНО: сквозь него можно кликать */
+    z-index: 9999;
+}
+
+/* Экран планеты, когда он скрыт, не должен мешать */
+#planet-screen.hidden {
+    display: none !important;
+    pointer-events: none;
+}
+
 body, html {
     margin: 0; padding: 0;
     width: 100%; height: 100%;
