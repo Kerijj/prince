@@ -2,59 +2,41 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Маленький Принц: Звездный путь</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вселенная Маленького Принца</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div id="stars-container"></div>
     <div id="fx-layer"></div>
 
-    <div id="wisdom-counter" class="fade-in">
-        🌟 Мудрость: <span id="wisdom-score">0</span>
-    </div>
+    <section id="universe-screen">
+        <div id="solar-system"></div>
+        <div id="stats-panel">Мудрость: <span id="wisdom-score">0</span></div>
+        <button id="diary-toggle" onclick="toggleDiary()">📓 Дневник</button>
+    </section>
 
-    <div id="universe-screen">
-        <div id="solar-system">
-            <div id="sun-moon-center">✨</div>
-            </div>
-    </div>
-
-
-
-    <div id="planet-screen" class="hidden">
+    <section id="planet-screen" class="hidden">
         <div class="content-wrapper">
-            <button class="back-link" onclick="goToUniverse()">← Вернуться к звездам</button>
-            
-            <h1 id="planet-name" class="glow-text"></h1>
+            <h1 id="planet-name"></h1>
             <p id="planet-desc"></p>
+            <div id="characters-list"></div>
             
-            <div id="characters-list" class="char-flex-container"></div>
-            
-            <div id="task-area" class="hidden task-card-dark">
-                <div class="task-info">
-                    <span class="task-label">Текущее задание:</span>
-                    <p id="task-text"></p>
-                </div>
-                <button class="complete-btn-gold" onclick="completeTask()">Готово</button>
+            <div id="task-area" class="hidden">
+                <div id="task-text"></div>
+                <button class="complete-btn-gold" onclick="completeTask()">Выполнить</button>
             </div>
 
             <div id="resource-controls"></div>
+            <button class="back-btn" onclick="goToUniverse()">Вернуться к звездам</button>
         </div>
-    </div>
+    </section>
 
-    <div id="diary-container">
-        <button id="diary-toggle" onclick="toggleDiary()">📖 Дневник</button>
-        <div id="diary-box" class="hidden glass-effect">
-            <div class="fox-helper">
-                <span class="fox-icon">🦊</span>
-                <p id="fox-phrase">"Зорко одно лишь сердце..."</p>
-            </div>
-            <textarea id="note-input" placeholder="Запиши мудрость звезд..."></textarea>
-            <button class="action-btn" onclick="saveNote()">Сохранить</button>
-            <div id="notes-list"></div>
-        </div>
+    <div id="diary-box" class="hidden">
+        <h3>Заметки сердца</h3>
+        <input type="text" id="note-input" placeholder="О чем ты думаешь?">
+        <button onclick="saveNote()">Записать</button>
+        <div id="notes-list"></div>
     </div>
 
     <script src="script.js"></script>
