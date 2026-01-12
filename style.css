@@ -173,3 +173,42 @@ body, html {
     font-size: 2rem; text-align: center; transition: 1s; z-index: 3000;
     text-shadow: 0 0 10px var(--gold);
 }
+
+/* Убираем стандартные стили кнопок (чтобы не было белого фона) */
+button {
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+/* Специфический стиль для кнопок в карточках */
+.char-card .action-btn {
+    margin-top: 15px;
+    display: inline-block;
+    background: rgba(255, 215, 0, 0.1); /* Прозрачно-золотой */
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-weight: bold;
+}
+
+.char-card .action-btn:hover {
+    background: var(--gold);
+    color: #000;
+}
+
+/* Анимация для зоны задач */
+#task-area {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px dashed var(--gold);
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+
+
+
+
