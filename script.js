@@ -1095,7 +1095,6 @@ const affirmations = ["Я в гармонии со Вселенной", "Моё 
 
 
 const foxPhrases = ["Зорко одно лишь сердце.", "Ты в ответе за тех, кого приручил.", "У каждого свои звезды."];
-const affirmations = ["Я в гармонии со Вселенной", "Моё сердце открыто чуду", "Тишина рождает свет"];
 
 // 2. СОСТОЯНИЕ
 let gameState = JSON.parse(localStorage.getItem('prince_save_final')) || { wisdom: 0, notes: [] };
