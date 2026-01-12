@@ -2,11 +2,7 @@
     --gold: #ffd700;
     --gold-dim: rgba(255, 215, 0, 0.3);
     --bg-dark: #050505;
-    /* Палитра для карточек */
     --card-bg: rgba(15, 15, 20, 0.95);
-    --task-accent-1: #4c1d95; /* Фиолетовый */
-    --task-accent-2: #1e3a8a; /* Синий */
-    --task-accent-3: #064e3b; /* Изумрудный */
 }
 
 body, html {
@@ -14,94 +10,85 @@ body, html {
     width: 100%; height: 100%;
     background: var(--bg-dark);
     color: var(--gold);
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow: hidden;
 }
 
-#universe-screen {
-    width: 100vw; height: 100vh;
-    display: flex; justify-content: center; align-items: center;
+#stars-container { position: fixed; inset: 0; z-index: 0; }
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    width: 2px; height: 2px;
+    opacity: 0.5;
+    animation: twinkle var(--d) infinite ease-in-out;
 }
+
+@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 #solar-system {
-    position: relative;
-    width: 100%; height: 100%;
+    position: relative; width: 100vw; height: 100vh;
     display: flex; justify-content: center; align-items: center;
+    z-index: 10;
 }
 
-/* Орбиты и ротаторы - ПРОПУСКАЮТ КЛИКИ */
-.orbit, .rotator {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none; /* Ключевое исправление */
-    border-radius: 50%;
+/* Центр (Солнце/Луна) */
+#sun-moon-center {
+    font-size: 3rem; cursor: pointer; z-index: 100;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#sun-moon-center:hover { transform: scale(1.3); }
+
+.orbit {
+    position: absolute; border: 1px solid var(--gold-dim); border-radius: 50%;
+    pointer-events: none;
 }
 
-.orbit { border: 1px solid var(--gold-dim); }
+.rotator {
+    position: absolute; border-radius: 50%;
+    animation: rotate linear infinite; pointer-events: none;
+}
 
-.rotator { animation: rotate linear infinite; }
-
-/* Планеты - ПРИНИМАЮТ КЛИКИ */
 .orbiting-planet {
-    position: absolute;
-    top: 0; left: 50%;
+    position: absolute; top: 0; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: clamp(1.5rem, 5vw, 2.8rem);
-    cursor: pointer;
-    pointer-events: auto; /* Включаем клики обратно */
-    z-index: 2000;
-    transition: transform 0.3s;
-    user-select: none;
+    font-size: 2.5rem; cursor: pointer;
+    pointer-events: auto; z-index: 200;
 }
 
-.orbiting-planet:hover { transform: translate(-50%, -50%) scale(1.2); }
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-@keyframes rotate {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* --- ЭКРАН ПЛАНЕТЫ (АДАПТИВНОСТЬ) --- */
+/* Планета */
 #planet-screen {
-    position: fixed;
-    inset: 0; z-index: 5000;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: fixed; inset: 0; z-index: 1000;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 2rem; overflow-y: auto;
 }
 
-.content-wrapper { width: 100%; max-width: 500px; text-align: center; }
-
-/* КАРТОЧКИ ЗАДАНИЙ */
 .char-card {
-    background: var(--card-bg);
-    border: 1px solid var(--gold-dim);
-    border-radius: 15px;
-    margin: 15px 0;
-    padding: 20px;
-    cursor: pointer;
+    background: var(--card-bg); border: 1px solid var(--gold-dim);
+    border-radius: 12px; margin: 10px 0; padding: 15px;
     transition: 0.3s;
 }
+.char-card.active { border-color: var(--gold); }
 
-.char-card:nth-child(1) { border-left: 5px solid var(--task-accent-1); }
-.char-card:nth-child(2) { border-left: 5px solid var(--task-accent-2); }
-.char-card:nth-child(3) { border-left: 5px solid var(--task-accent-3); }
+.back-btn { margin-top: 20px; background: none; border: 1px solid var(--gold); color: var(--gold); padding: 10px; cursor: pointer; }
 
-.char-card.active { border-color: var(--gold); box-shadow: 0 0 15px var(--gold-dim); }
-
-.start-task-btn, .complete-btn-gold {
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-top: 10px;
+/* Дневник */
+#diary-box {
+    position: fixed; right: 20px; bottom: 80px; width: 250px;
+    background: var(--card-bg); border: 1px solid var(--gold);
+    padding: 15px; z-index: 2000; border-radius: 10px;
 }
 
-.start-task-btn:hover { background: var(--gold); color: black; }
+#stats-panel { position: fixed; top: 20px; left: 20px; font-size: 1.2rem; }
+#diary-toggle { position: fixed; bottom: 20px; right: 20px; }
 
-.hidden { display: none !important; }
+.shooting-star { position: absolute; color: white; pointer-events: none; z-index: 5; }
+@keyframes shoot { to { transform: translate(100vw, 100vh); opacity: 0; } }
+
+.meditation-active { filter: hue-rotate(45deg) brightness(0.8); transition: 2s; }
+#affirmation-text {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 2rem; text-align: center; transition: 1s; z-index: 3000;
+}
