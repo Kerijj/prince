@@ -16,6 +16,7 @@
 
         <div id="stats-panel">
             <div class="stat-item">🌟 Мудрость: <span id="wisdom-score">0</span></div>
+            <div id="resource-controls"></div>
         </div>
 
         <button id="diary-toggle" class="glass-btn" onclick="toggleDiary()">
@@ -23,23 +24,17 @@
         </button>
     </section>
 
-    <section id="planet-screen" class="hidden"></section>
-    
     <section id="planet-screen" class="hidden">
-        <div class="planet-header">
-            <button class="glass-btn" onclick="goToUniverse()">← Назад в космос</button>
-            <h1 id="planet-name">Название планеты</h1>
-            <p id="planet-desc">Описание планеты появится здесь...</p>
-        </div>
-
+        <button class="glass-btn" onclick="goToUniverse()" style="margin-bottom: 20px;">← Назад</button>
+        
+        <h1 id="planet-name"></h1>
+        <p id="planet-desc" style="max-width: 600px; text-align: center; margin-bottom: 30px;"></p>
+        
         <div id="characters-list"></div>
 
-        <div id="task-area" class="hidden scale-up">
+        <div id="task-area" class="hidden">
             <div class="single-task-card">
-                <p id="task-text">Задание...</p>
-                <div class="progress-container">
-                    <div id="task-progress" class="progress-bar" style="width: 0%"></div>
-                </div>
+                <p id="task-text" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
                 <button class="complete-btn-gold" onclick="completeTask()">Выполнено</button>
             </div>
         </div>
@@ -56,8 +51,7 @@
             <button class="action-btn" onclick="saveNote()">Записать</button>
         </div>
 
-        <div id="notes-list">
-            </div>
+        <div id="notes-list"></div>
     </div>
 
     <script src="script.js"></script>
