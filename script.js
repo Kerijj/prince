@@ -1384,12 +1384,43 @@ function launchStarfall() {
 function toggleDiary() {
     document.getElementById('diary-box').classList.toggle('hidden');
 }
-// 1. Функция отрисовки системы (вызови её внутри window.onload)
+
+
+  
+
 function renderUniverse() {
     const system = document.getElementById('solar-system');
     if (!system) return;
+    system.innerHTML = '<div class="sun">☀️</div>';
+       system.innerHTML = ''; // Очищаем
 
-    system.innerHTML = ''; // Очищаем
+    planetData.forEach((planet, index) => {
+        const orbit = document.createElement('div');
+        orbit.className = 'orbit';
+        
+        const size = 150 + (index * 80); 
+        orbit.style.width = `${size}px`;
+        orbit.style.height = `${size}px`;
+
+        // Задаем разную скорость вращения (от 20 до 60 секунд)
+        const duration = 20 + (index * 10);
+        orbit.style.animationDuration = `${duration}s`;
+
+        const planetEl = document.createElement('div');
+        planetEl.className = 'planet-mini';
+        planetEl.style.animationDuration = `${duration}s`; // Чтобы иконка не крутилась
+        planetEl.innerHTML = planet.icon || '🪐';
+        
+        planetEl.onclick = (e) => {
+            e.stopPropagation();
+            openPlanet(index);
+        };
+
+        orbit.appendChild(planetEl);
+        system.appendChild(orbit);
+    });
+}
+     
 
     // Создаем Солнце (центр системы)
     const sun = document.createElement('div');
